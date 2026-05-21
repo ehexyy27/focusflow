@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     /* ──────────────────────────────────────────────
@@ -212,6 +213,138 @@
     }
     .nav-cta:hover { background: var(--signal); border-color: var(--signal); color: var(--paper); }
     .nav-cta:hover::before { background: var(--paper); }
+
+    .nav-user {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .nav-user-name {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .nav-signout {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--rule-strong);
+      padding: 5px 12px;
+      letter-spacing: 0.04em;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .nav-signout:hover { color: var(--signal); border-color: var(--signal); }
+
+    /* ── Auth Modal ── */
+    .auth-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(13,13,12,0.6);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 250ms ease;
+    }
+    .auth-overlay.open { opacity: 1; pointer-events: all; }
+
+    .auth-card {
+      background: var(--paper);
+      border: 1px solid var(--ink);
+      width: 100%; max-width: 400px;
+      padding: 40px;
+      position: relative;
+      transform: translateY(16px);
+      transition: transform 300ms var(--ease);
+    }
+    .auth-overlay.open .auth-card { transform: translateY(0); }
+
+    .auth-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .auth-sub {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 24px;
+      gap: 0;
+    }
+    .auth-tab {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 0;
+      margin-right: 24px;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .auth-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+    .auth-field { margin-bottom: 16px; }
+    .auth-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--paper-2);
+      border: 1px solid var(--rule-strong);
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+    .auth-input:focus { border-color: var(--ink); }
+
+    .auth-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: none;
+      margin-top: 8px;
+      transition: background 150ms ease;
+    }
+    .auth-submit:hover { background: var(--signal); }
+
+    .auth-error {
+      font-size: 12px;
+      color: var(--signal);
+      margin-top: 10px;
+      min-height: 16px;
+    }
+    .auth-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      font-size: 20px;
+      color: var(--muted);
+      line-height: 1;
+      transition: color 150ms ease;
+    }
+    .auth-close:hover { color: var(--ink); }
 
     @keyframes blink {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -1713,7 +1846,11 @@
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#proof">Press</a></li>
       </ul>
-      <a href="#pricing" class="nav-cta">Begin a Session</a>
+      <div class="nav-user" id="navUser">
+        <span class="nav-user-name" id="navUserName"></span>
+        <button class="nav-signout" onclick="handleSignOut()">Sign out</button>
+      </div>
+      <button class="nav-cta" id="navCta" onclick="openAuth()">Begin a Session</button>
     </div>
   </nav>
 
@@ -2180,6 +2317,29 @@
     </div>
   </footer>
 
+  <!-- Auth Modal -->
+  <div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+    <div class="auth-card">
+      <button class="auth-close" onclick="closeAuth()">×</button>
+      <div class="auth-title">FocusFlow</div>
+      <p class="auth-sub">Sign in to save sessions and track your streak.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="authEmail">Email</label>
+        <input class="auth-input" id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="authPassword">Password</label>
+        <input class="auth-input" id="authPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="auth-submit" id="authSubmit" onclick="handleAuthSubmit()">Sign In</button>
+      <div class="auth-error" id="authError"></div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toastEl"></div>
 
@@ -2187,6 +2347,146 @@
        JAVASCRIPT — timer logic + receipt stack
        ════════════════════════════════════════════ -->
   <script>
+    // ── Supabase ──────────────────────────────────
+    const SUPABASE_URL = 'https://bkqvzgjfuwccsvquhczf.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-eHb7SxpguPy_onzQvuWhQ_NkFKj6Hi';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentUser = null;
+    let authMode = 'signin';
+
+    sb.auth.onAuthStateChange(async (_event, session) => {
+      currentUser = session?.user ?? null;
+      updateAuthUI();
+      if (currentUser) await loadTodaySessions();
+    });
+
+    // ── Auth UI helpers ───────────────────────────
+    function openAuth() {
+      document.getElementById('authOverlay').classList.add('open');
+      document.getElementById('authEmail').focus();
+    }
+    function closeAuth() {
+      document.getElementById('authOverlay').classList.remove('open');
+      document.getElementById('authError').textContent = '';
+    }
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('authOverlay')) closeAuth();
+    }
+    function switchAuthTab(tab) {
+      authMode = tab;
+      document.getElementById('tabSignIn').classList.toggle('active', tab === 'signin');
+      document.getElementById('tabSignUp').classList.toggle('active', tab === 'signup');
+      document.getElementById('authSubmit').textContent = tab === 'signin' ? 'Sign In' : 'Create Account';
+      document.getElementById('authPassword').autocomplete = tab === 'signin' ? 'current-password' : 'new-password';
+      document.getElementById('authError').textContent = '';
+    }
+    async function handleAuthSubmit() {
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const errEl = document.getElementById('authError');
+      errEl.textContent = '';
+      if (!email || !password) { errEl.textContent = 'Please fill in all fields.'; return; }
+
+      const btn = document.getElementById('authSubmit');
+      btn.textContent = '...';
+      btn.disabled = true;
+
+      const { error } = authMode === 'signin'
+        ? await sb.auth.signInWithPassword({ email, password })
+        : await sb.auth.signUp({ email, password });
+
+      btn.disabled = false;
+      btn.textContent = authMode === 'signin' ? 'Sign In' : 'Create Account';
+
+      if (error) { errEl.textContent = error.message; return; }
+      if (authMode === 'signup') toast('📧 Check your email to confirm your account.');
+      closeAuth();
+    }
+    async function handleSignOut() {
+      await sb.auth.signOut();
+      currentUser = null;
+      sessions = 0; focusMin = 0; streak = 1; take = 1; receiptCount = 0;
+      updateAuthUI();
+      sesEl.textContent = '00';
+      timeEl.innerHTML = '0<em>m</em>';
+      if (streakNumEl) streakNumEl.textContent = '01';
+      if (receiptsEl) receiptsEl.innerHTML = '';
+      toast('Signed out. See you next session.');
+    }
+    function updateAuthUI() {
+      const userEl = document.getElementById('navUser');
+      const nameEl = document.getElementById('navUserName');
+      const ctaEl  = document.getElementById('navCta');
+      if (currentUser) {
+        userEl.style.display = 'flex';
+        nameEl.textContent = currentUser.email.split('@')[0];
+        ctaEl.style.display = 'none';
+      } else {
+        userEl.style.display = 'none';
+        ctaEl.style.display = 'inline-flex';
+      }
+    }
+
+    // ── Supabase data ─────────────────────────────
+    async function saveSession(minutes, isFull, quip) {
+      if (!currentUser) return;
+      await sb.from('sessions').insert({
+        user_id: currentUser.id,
+        duration_minutes: minutes,
+        is_full_session: isFull,
+        quip,
+        mode,
+        created_at: new Date().toISOString()
+      });
+    }
+
+    async function loadTodaySessions() {
+      if (!currentUser) return;
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await sb
+        .from('sessions')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .eq('mode', 'Focus')
+        .gte('created_at', today + 'T00:00:00Z')
+        .order('created_at', { ascending: false });
+      if (error || !data) return;
+
+      sessions = data.length;
+      take = sessions + 1;
+      focusMin = data.reduce((acc, s) => acc + s.duration_minutes, 0);
+      sesEl.textContent = String(sessions).padStart(2, '0');
+      timeEl.innerHTML = focusMin >= 60
+        ? `${(focusMin / 60).toFixed(1)}<em>h</em>`
+        : `${focusMin}<em>m</em>`;
+
+      await calcStreak();
+    }
+
+    async function calcStreak() {
+      if (!currentUser) return;
+      const { data } = await sb
+        .from('sessions')
+        .select('created_at')
+        .eq('user_id', currentUser.id)
+        .eq('mode', 'Focus')
+        .order('created_at', { ascending: false });
+      if (!data || !data.length) { streak = 0; if (streakNumEl) streakNumEl.textContent = '00'; return; }
+
+      const days = [...new Set(data.map(s => s.created_at.slice(0, 10)))].sort().reverse();
+      let count = 0;
+      let check = new Date(); check.setHours(0,0,0,0);
+      for (const d of days) {
+        if (d === check.toISOString().slice(0, 10)) {
+          count++;
+          check.setDate(check.getDate() - 1);
+        } else break;
+      }
+      streak = count;
+      if (streakNumEl) streakNumEl.textContent = String(streak).padStart(2, '0');
+    }
+
     // ── State ─────────────────────────────────────
     const R = 255;
     const CIRC = 2 * Math.PI * R;
@@ -2364,6 +2664,7 @@
         }
 
         printReceipt(actualMinutes, isFullSession);
+        saveSession(actualMinutes, isFullSession, RECEIPT_QUIPS[(receiptCount) % RECEIPT_QUIPS.length]);
         toast('Receipt printed. Take a real break — water, window, walk.');
       }
       remaining = duration;
