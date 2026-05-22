@@ -253,12 +253,54 @@
     /* ── Analytics Page ── */
     .analytics-page {
       display: none;
-      position: fixed; inset: 0; z-index: 90;
+      position: fixed; inset: 0;
+      /* z-index above nav (100) so nothing bleeds through */
+      z-index: 110;
       background: var(--paper);
       overflow-y: auto;
-      padding-top: 80px;
+      -webkit-overflow-scrolling: touch;
     }
     .analytics-page.open { display: block; }
+
+    /* Sticky internal nav bar — replaces reliance on the main nav */
+    .analytics-nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(243, 239, 230, 0.92);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border-bottom: 1px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px var(--pad);
+    }
+
+    .analytics-nav-brand {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .analytics-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .analytics-back {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 7px 14px;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .analytics-back:hover { background: var(--ink); color: var(--paper); }
 
     .analytics-wrap {
       max-width: 1000px;
@@ -287,18 +329,6 @@
       font-style: italic;
       color: var(--signal);
     }
-
-    .analytics-back {
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--rule);
-      padding-bottom: 2px;
-      transition: color 150ms ease, border-color 150ms ease;
-    }
-    .analytics-back:hover { color: var(--ink); border-color: var(--ink); }
 
     .analytics-stats {
       display: grid;
@@ -2481,10 +2511,18 @@
 
   <!-- Analytics Page -->
   <div class="analytics-page" id="analyticsPage">
+
+    <!-- Internal sticky nav — fully self-contained, no reliance on main nav -->
+    <div class="analytics-nav">
+      <span class="analytics-nav-brand">FocusFlow — <em>Analytics</em></span>
+      <div class="analytics-nav-actions">
+        <button class="analytics-back" onclick="hideAnalytics()">← Back to Timer</button>
+      </div>
+    </div>
+
     <div class="analytics-wrap">
       <div class="analytics-header">
         <h2 class="analytics-title">Your Focus <em>Ledger</em></h2>
-        <button class="analytics-back" onclick="hideAnalytics()">← Back to Timer</button>
       </div>
 
       <!-- Stats row -->
@@ -3093,12 +3131,21 @@
 
     function showAnalytics() {
       document.getElementById('analyticsPage').classList.add('open');
+      document.body.style.overflow = 'hidden'; // prevent background scroll
       loadAnalytics();
     }
 
     function hideAnalytics() {
       document.getElementById('analyticsPage').classList.remove('open');
+      document.body.style.overflow = '';
     }
+
+    // Close analytics with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.getElementById('analyticsPage').classList.contains('open')) {
+        hideAnalytics();
+      }
+    });
 
     async function loadAnalytics() {
       if (!currentUser) return;
