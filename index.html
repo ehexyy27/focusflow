@@ -50,7 +50,8 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    /* scroll-behavior removed — JS handles smooth anchors,
+       browser smooth-restoration caused jump-to-pricing on refresh */
 
     body {
       background: var(--paper);
@@ -2604,6 +2605,9 @@
        JAVASCRIPT — timer logic + receipt stack
        ════════════════════════════════════════════ -->
   <script>
+    // Always start at top on refresh — disable browser scroll restoration
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
     // ── Supabase ──────────────────────────────────
     const SUPABASE_URL = 'https://bkqvzgjfuwccsvquhczf.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_-eHb7SxpguPy_onzQvuWhQ_NkFKj6Hi';
