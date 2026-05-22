@@ -2566,10 +2566,10 @@
     let currentUser = null;
     let authMode = 'signin';
 
-    sb.auth.onAuthStateChange(async (_event, session) => {
+    sb.auth.onAuthStateChange((_event, session) => {
       currentUser = session?.user ?? null;
       updateAuthUI();
-      if (currentUser) await loadTodaySessions();
+      if (currentUser) loadUserData(); // fire-and-forget, no await
     });
 
     // ── Auth UI helpers ───────────────────────────
@@ -2652,42 +2652,46 @@
       });
     }
 
-    async function loadTodaySessions() {
+    // Single query: fetch last 60 days → split into today stats + streak calc
+    async function loadUserData() {
       if (!currentUser) return;
-      const today = new Date().toISOString().split('T')[0];
+
+      // Show "loading" state on stat numbers immediately
+      [sesEl, streakNumEl].forEach(el => { if (el) el.style.opacity = '0.35'; });
+
+      const since = new Date();
+      since.setDate(since.getDate() - 60);
+      since.setHours(0, 0, 0, 0);
+
+      const today = new Date().toISOString().slice(0, 10);
+
       const { data, error } = await sb
         .from('sessions')
-        .select('*')
+        .select('created_at, duration_minutes')
         .eq('user_id', currentUser.id)
         .eq('mode', 'Focus')
-        .gte('created_at', today + 'T00:00:00Z')
+        .gte('created_at', since.toISOString())
         .order('created_at', { ascending: false });
-      if (error || !data) return;
 
-      sessions = data.length;
+      if (error || !data) {
+        [sesEl, streakNumEl].forEach(el => { if (el) el.style.opacity = '1'; });
+        return;
+      }
+
+      // Today's stats
+      const todayData = data.filter(s => s.created_at.slice(0, 10) === today);
+      sessions = todayData.length;
       take = sessions + 1;
-      focusMin = data.reduce((acc, s) => acc + s.duration_minutes, 0);
+      focusMin = todayData.reduce((acc, s) => acc + s.duration_minutes, 0);
       sesEl.textContent = String(sessions).padStart(2, '0');
       timeEl.innerHTML = focusMin >= 60
         ? `${(focusMin / 60).toFixed(1)}<em>h</em>`
         : `${focusMin}<em>m</em>`;
 
-      await calcStreak();
-    }
-
-    async function calcStreak() {
-      if (!currentUser) return;
-      const { data } = await sb
-        .from('sessions')
-        .select('created_at')
-        .eq('user_id', currentUser.id)
-        .eq('mode', 'Focus')
-        .order('created_at', { ascending: false });
-      if (!data || !data.length) { streak = 0; if (streakNumEl) streakNumEl.textContent = '00'; return; }
-
+      // Streak calc from the same data (60 days is plenty)
       const days = [...new Set(data.map(s => s.created_at.slice(0, 10)))].sort().reverse();
       let count = 0;
-      let check = new Date(); check.setHours(0,0,0,0);
+      let check = new Date(); check.setHours(0, 0, 0, 0);
       for (const d of days) {
         if (d === check.toISOString().slice(0, 10)) {
           count++;
@@ -2695,7 +2699,17 @@
         } else break;
       }
       streak = count;
+
+      // Restore opacity with a quick fade-in
+      [sesEl, streakNumEl].forEach(el => {
+        if (el) { el.style.transition = 'opacity 0.3s ease'; el.style.opacity = '1'; }
+      });
       if (streakNumEl) streakNumEl.textContent = String(streak).padStart(2, '0');
+    }
+
+    // Kept for backwards compat — called after a new session is saved
+    async function loadTodaySessions() {
+      return loadUserData();
     }
 
     // ── State ─────────────────────────────────────
