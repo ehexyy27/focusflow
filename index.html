@@ -251,6 +251,18 @@
     }
     .nav-signout:hover { color: var(--signal); border-color: var(--signal); }
 
+    .nav-lang {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      border: 1px solid var(--rule-strong);
+      padding: 5px 9px;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .nav-lang:hover { color: var(--ink); border-color: var(--ink); }
+
     /* ── Analytics Page ── */
     /* Flex column: nav stays at top, body scrolls independently.
        overflow-y is on .analytics-body only — NOT on the page root.
@@ -2133,17 +2145,18 @@
         </span>
       </a>
       <ul class="nav-links">
-        <li><a href="#app">The Timer</a></li>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#proof">Press</a></li>
+        <li><a href="#app" data-i18n="nav.timer">The Timer</a></li>
+        <li><a href="#features" data-i18n="nav.features">Features</a></li>
+        <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
+        <li><a href="#proof" data-i18n="nav.proof">Press</a></li>
       </ul>
       <div class="nav-user" id="navUser">
         <span class="nav-user-name" id="navUserName"></span>
-        <button class="nav-analytics" onclick="showAnalytics()">Analytics</button>
-        <button class="nav-signout" onclick="handleSignOut()">Sign out</button>
+        <button class="nav-analytics" data-i18n="nav.analytics" onclick="showAnalytics()">Analytics</button>
+        <button class="nav-signout" data-i18n="nav.signout" onclick="handleSignOut()">Sign out</button>
       </div>
-      <button class="nav-cta" id="navCta" onclick="openAuth()">Begin a Session</button>
+      <button class="nav-lang" id="langBtn" onclick="toggleLang()" title="Switch language">RU</button>
+      <button class="nav-cta" id="navCta" data-i18n="nav.cta" onclick="openAuth()">Begin a Session</button>
     </div>
   </nav>
 
@@ -2171,29 +2184,29 @@
         </div>
 
         <div class="hero-eyebrow">
-          <div class="vol">
+          <div class="vol" data-i18n-html="hero.eyebrow">
             <b>A Field Guide for Knowledge Workers</b>
             On the quiet art of finishing what you start — in a culture engineered to prevent it.
           </div>
         </div>
 
         <h1 class="hero-h1">
-          <span class="line-1">Work deep<span class="ampersand">,</span></span>
-          <span class="line-2"><span class="underline-word">ship</span> what matters.</span>
+          <span class="line-1" data-i18n-html="hero.line1">Work deep<span class="ampersand">,</span></span>
+          <span class="line-2" data-i18n-html="hero.line2"><span class="underline-word">ship</span> what matters.</span>
         </h1>
 
         <div class="hero-foot">
-          <p class="hero-deck">
+          <p class="hero-deck" data-i18n="hero.deck">
             FocusFlow is a Pomodoro instrument for people whose work cannot be done in five-minute slices. Block the noise, time the work, and watch the days compound.
           </p>
 
           <div class="hero-cta">
             <a href="#app" class="btn-x">
-              Start a Session
+              <span data-i18n="hero.cta1">Start a Session</span>
               <span class="arrow">→</span>
             </a>
             <a href="#features" class="btn-ghost-x">
-              Read the field guide
+              <span data-i18n="hero.cta2">Read the field guide</span>
               <span>↓</span>
             </a>
           </div>
@@ -2210,19 +2223,19 @@
         <div class="metrics">
           <div>
             <span class="metric-k">2.4<em>M</em></span>
-            <span class="metric-l">Sessions logged</span>
+            <span class="metric-l" data-i18n="metric.sessions">Sessions logged</span>
           </div>
           <div>
             <span class="metric-k">47<em>k</em></span>
-            <span class="metric-l">Active focusers</span>
+            <span class="metric-l" data-i18n="metric.focusers">Active focusers</span>
           </div>
           <div>
             <span class="metric-k">4.9<em>★</em></span>
-            <span class="metric-l">App Store rating</span>
+            <span class="metric-l" data-i18n="metric.rating">App Store rating</span>
           </div>
           <div>
             <span class="metric-k">+38<em>%</em></span>
-            <span class="metric-l">Reported output</span>
+            <span class="metric-l" data-i18n="metric.output">Reported output</span>
           </div>
         </div>
 
@@ -2245,21 +2258,21 @@
 
         <!-- LEFT — mode tabs -->
         <aside class="timer-left">
-          <div class="micro muted">Select cadence</div>
+          <div class="micro muted" data-i18n="timer.cadence">Select cadence</div>
           <div class="tabs">
             <button class="tab active" onclick="setMode(this,'Focus',1500)">
               <span class="num">01</span>
-              <span class="name">Focus</span>
+              <span class="name" data-i18n="mode.focus">Focus</span>
               <span class="dur">25 min</span>
             </button>
             <button class="tab" onclick="setMode(this,'Short Break',300)">
               <span class="num">02</span>
-              <span class="name">Short Break</span>
+              <span class="name" data-i18n="mode.short">Short Break</span>
               <span class="dur">05 min</span>
             </button>
             <button class="tab" onclick="setMode(this,'Long Break',900)">
               <span class="num">03</span>
-              <span class="name">Long Break</span>
+              <span class="name" data-i18n="mode.long">Long Break</span>
               <span class="dur">15 min</span>
             </button>
           </div>
@@ -2306,18 +2319,18 @@
                 <polyline points="1,4 1,10 7,10"/>
                 <path d="M3.51 15a9 9 0 1 0 .49-3.1"/>
               </svg>
-              Reset
+              <span data-i18n="timer.reset">Reset</span>
             </button>
 
             <button class="play-btn" id="playBtn" onclick="toggleTimer()">
               <span class="ico-wrap" id="playIco">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
               </span>
-              <span id="playLbl">Begin</span>
+              <span id="playLbl" data-i18n="timer.begin">Begin</span>
             </button>
 
             <button class="icon-btn" onclick="skipSession()" title="Skip" aria-label="Skip">
-              Skip
+              <span data-i18n="timer.skip">Skip</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polygon points="5,4 15,12 5,20"/>
                 <line x1="19" y1="5" x2="19" y2="19"/>
@@ -2329,28 +2342,28 @@
         <!-- RIGHT — TODAY'S LEDGER with receipt stack -->
         <aside class="ledger-column">
           <div class="ledger-head">
-            <div class="title"><b>Today's</b> ledger</div>
-            <div class="count">Receipts <b id="ledgerCount">00</b></div>
+            <div class="title" data-i18n-html="ledger.title"><b>Today's</b> ledger</div>
+            <div class="count"><span data-i18n="ledger.receipts">Receipts</span> <b id="ledgerCount">00</b></div>
           </div>
 
           <div class="ledger-stats">
             <div class="stat-block">
-              <div class="stat-l">Sessions</div>
+              <div class="stat-l" data-i18n="ledger.sessions">Sessions</div>
               <div class="stat-v" id="statSessions">00</div>
             </div>
             <div class="stat-block">
-              <div class="stat-l">Focus time</div>
+              <div class="stat-l" data-i18n="ledger.focustime">Focus time</div>
               <div class="stat-v" id="statTime">0<em>m</em></div>
             </div>
           </div>
 
           <div class="receipts-wrap">
             <div class="receipts-label">
-              <span>Printed receipts</span>
-              <span><b id="streakNum">01</b> day streak<button class="streak-share" onclick="shareStreak()" title="Share your streak">↗</button></span>
+              <span data-i18n="ledger.printed">Printed receipts</span>
+              <span><b id="streakNum">01</b> <span data-i18n="ledger.streak">day streak</span><button class="streak-share" onclick="shareStreak()" title="Share your streak">↗</button></span>
             </div>
 
-            <div class="receipts-empty" id="receiptsEmpty">
+            <div class="receipts-empty" id="receiptsEmpty" data-i18n="ledger.empty">
               When a session completes, a receipt prints here. Each one is stamped, dated, and yours to keep — even after the day is done.
             </div>
 
@@ -2363,8 +2376,8 @@
       <!-- SOUNDS moved OUTSIDE the timer grid to resolve sticky collision -->
       <div class="sounds-section">
         <div>
-          <h4><em>Ambient</em> <b>soundscapes</b></h4>
-          <p>Curated audio environments. Click one to play; click again to hush.</p>
+          <h4 data-i18n-html="sounds.title"><em>Ambient</em> <b>soundscapes</b></h4>
+          <p data-i18n="sounds.desc">Curated audio environments. Click one to play; click again to hush.</p>
         </div>
         <div class="sounds">
           <button class="snd" onclick="toggleSound(this,'rain')">
@@ -2458,10 +2471,10 @@
     <div class="wrap">
       <div class="proof-grid">
         <div class="proof-eye"><b>★★★★★</b><br>From the field</div>
-        <blockquote class="proof-quote">
+        <blockquote class="proof-quote" data-i18n-html="proof.quote">
           FocusFlow cut my context-switching <em>in half</em>. I ship more in four focused hours than I used to in <em>eight distracted ones</em>.
         </blockquote>
-        <div class="proof-count">
+        <div class="proof-count" data-i18n-html="proof.count">
           Joined by <b>47,000+</b><br>quietly focused people, in 78 countries.
         </div>
         <div class="proof-meta">
@@ -2674,20 +2687,20 @@
     <div class="auth-card">
       <button class="auth-close" onclick="closeAuth()">×</button>
       <div class="auth-title">FocusFlow</div>
-      <p class="auth-sub">Sign in to save sessions and track your streak.</p>
+      <p class="auth-sub" data-i18n="auth.sub">Sign in to save sessions and track your streak.</p>
       <div class="auth-tabs">
-        <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
-        <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Create Account</button>
+        <button class="auth-tab active" id="tabSignIn" data-i18n="auth.signin" onclick="switchAuthTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tabSignUp" data-i18n="auth.signup" onclick="switchAuthTab('signup')">Create Account</button>
       </div>
       <div class="auth-field">
-        <label class="auth-label" for="authEmail">Email</label>
+        <label class="auth-label" for="authEmail" data-i18n="auth.email">Email</label>
         <input class="auth-input" id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" />
       </div>
       <div class="auth-field">
-        <label class="auth-label" for="authPassword">Password</label>
+        <label class="auth-label" for="authPassword" data-i18n="auth.password">Password</label>
         <input class="auth-input" id="authPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
       </div>
-      <button class="auth-submit" id="authSubmit" onclick="handleAuthSubmit()">Sign In</button>
+      <button class="auth-submit" id="authSubmit" data-i18n="auth.signin" onclick="handleAuthSubmit()">Sign In</button>
       <div class="auth-error" id="authError"></div>
     </div>
   </div>
@@ -2743,7 +2756,9 @@
       authMode = tab;
       document.getElementById('tabSignIn').classList.toggle('active', tab === 'signin');
       document.getElementById('tabSignUp').classList.toggle('active', tab === 'signup');
-      document.getElementById('authSubmit').textContent = tab === 'signin' ? 'Sign In' : 'Create Account';
+      document.getElementById('authSubmit').textContent = tab === 'signin'
+        ? (TRANSLATIONS[currentLang]['auth.signin'] || 'Sign In')
+        : (TRANSLATIONS[currentLang]['auth.signup'] || 'Create Account');
       document.getElementById('authPassword').autocomplete = tab === 'signin' ? 'current-password' : 'new-password';
       document.getElementById('authError').textContent = '';
     }
@@ -2982,7 +2997,11 @@
       numEl.classList.toggle('running', on);
       lblEl.classList.toggle('running', on);
       ledEl.classList.toggle('on', on);
-      playLbl.textContent = on ? 'Pause' : (remaining < duration ? 'Resume' : 'Begin');
+      playLbl.textContent = on
+        ? (TRANSLATIONS[currentLang]['timer.pause'] || 'Pause')
+        : (remaining < duration
+            ? (TRANSLATIONS[currentLang]['timer.resume'] || 'Resume')
+            : (TRANSLATIONS[currentLang]['timer.begin'] || 'Begin'));
       playIco.innerHTML = on
         ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>'
         : '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
@@ -3109,7 +3128,9 @@
       mode = m;
       duration = dur;
       remaining = dur;
-      lblEl.textContent = `— ${m.toUpperCase()} —`;
+      const modeKeyMap = { 'Focus': 'mode.focus', 'Short Break': 'mode.short', 'Long Break': 'mode.long' };
+      const modeLabel = TRANSLATIONS[currentLang][modeKeyMap[m]] || m;
+      lblEl.textContent = `— ${modeLabel.toUpperCase()} —`;
       const cadenceMap = { 1500: '25 / 05', 300: '05 / --', 900: '15 / --' };
       if (cornerCadenceEl) cornerCadenceEl.textContent = cadenceMap[dur] || '-- / --';
       pause();
@@ -3426,8 +3447,147 @@
       document.querySelectorAll('.features, .pricing, .proof').forEach(el => io.observe(el));
     }
 
+    // ── Internationalisation ─────────────────────
+    let currentLang = localStorage.getItem('ff-lang') || 'en';
+
+    const TRANSLATIONS = {
+      en: {
+        'nav.timer':       'The Timer',
+        'nav.features':    'Features',
+        'nav.pricing':     'Pricing',
+        'nav.proof':       'Press',
+        'nav.analytics':   'Analytics',
+        'nav.signout':     'Sign out',
+        'nav.cta':         'Begin a Session',
+        'hero.eyebrow':    '<b>A Field Guide for Knowledge Workers</b> On the quiet art of finishing what you start — in a culture engineered to prevent it.',
+        'hero.line1':      'Work deep<span class="ampersand">,</span>',
+        'hero.line2':      '<span class="underline-word">ship</span> what matters.',
+        'hero.deck':       'FocusFlow is a Pomodoro instrument for people whose work cannot be done in five-minute slices. Block the noise, time the work, and watch the days compound.',
+        'hero.cta1':       'Start a Session',
+        'hero.cta2':       'Read the field guide',
+        'metric.sessions': 'Sessions logged',
+        'metric.focusers': 'Active focusers',
+        'metric.rating':   'App Store rating',
+        'metric.output':   'Reported output',
+        'timer.cadence':   'Select cadence',
+        'mode.focus':      'Focus',
+        'mode.short':      'Short Break',
+        'mode.long':       'Long Break',
+        'timer.reset':     'Reset',
+        'timer.begin':     'Begin',
+        'timer.resume':    'Resume',
+        'timer.pause':     'Pause',
+        'timer.skip':      'Skip',
+        'ledger.title':    '<b>Today\'s</b> ledger',
+        'ledger.receipts': 'Receipts',
+        'ledger.sessions': 'Sessions',
+        'ledger.focustime':'Focus time',
+        'ledger.printed':  'Printed receipts',
+        'ledger.streak':   'day streak',
+        'ledger.empty':    'When a session completes, a receipt prints here. Each one is stamped, dated, and yours to keep — even after the day is done.',
+        'sounds.title':    '<em>Ambient</em> <b>soundscapes</b>',
+        'sounds.desc':     'Curated audio environments. Click one to play; click again to hush.',
+        'proof.quote':     'FocusFlow cut my context-switching <em>in half</em>. I ship more in four focused hours than I used to in <em>eight distracted ones</em>.',
+        'proof.count':     'Joined by <b>47,000+</b><br>quietly focused people, in 78 countries.',
+        'auth.sub':        'Sign in to save sessions and track your streak.',
+        'auth.signin':     'Sign In',
+        'auth.signup':     'Create Account',
+        'auth.email':      'Email',
+        'auth.password':   'Password',
+      },
+      ru: {
+        'nav.timer':       'Таймер',
+        'nav.features':    'Функции',
+        'nav.pricing':     'Цены',
+        'nav.proof':       'Отзывы',
+        'nav.analytics':   'Аналитика',
+        'nav.signout':     'Выйти',
+        'nav.cta':         'Начать сессию',
+        'hero.eyebrow':    '<b>Руководство для работников знания</b> О тихом искусстве доводить дела до конца — в культуре, созданной этому мешать.',
+        'hero.line1':      'Работай глубоко<span class="ampersand">,</span>',
+        'hero.line2':      '<span class="underline-word">доводи</span> до конца.',
+        'hero.deck':       'FocusFlow — Помодоро-инструмент для тех, чья работа не укладывается в пятиминутные слоты. Блокируй шум, отмеряй работу, и наблюдай как дни складываются в результат.',
+        'hero.cta1':       'Начать сессию',
+        'hero.cta2':       'Читать руководство',
+        'metric.sessions': 'Сессий записано',
+        'metric.focusers': 'Активных пользователей',
+        'metric.rating':   'Рейтинг App Store',
+        'metric.output':   'Рост продуктивности',
+        'timer.cadence':   'Выбрать режим',
+        'mode.focus':      'Фокус',
+        'mode.short':      'Перерыв',
+        'mode.long':       'Долгий перерыв',
+        'timer.reset':     'Сброс',
+        'timer.begin':     'Старт',
+        'timer.resume':    'Продолжить',
+        'timer.pause':     'Пауза',
+        'timer.skip':      'Пропустить',
+        'ledger.title':    '<b>Журнал</b> дня',
+        'ledger.receipts': 'Чеков',
+        'ledger.sessions': 'Сессии',
+        'ledger.focustime':'Время фокуса',
+        'ledger.printed':  'Напечатанные чеки',
+        'ledger.streak':   'дн. подряд',
+        'ledger.empty':    'После завершения сессии здесь появится чек. Каждый — с печатью, датой и временем. Ваш личный архив продуктивности.',
+        'sounds.title':    '<em>Звуковые</em> <b>фоны</b>',
+        'sounds.desc':     'Аудио-окружение для глубокой работы. Нажми чтобы включить; ещё раз — чтобы выключить.',
+        'proof.quote':     'FocusFlow сократил мои переключения контекста <em>вдвое</em>. За четыре сфокусированных часа я делаю больше, чем раньше за <em>восемь рассеянных</em>.',
+        'proof.count':     'К нам присоединились <b>47&thinsp;000+</b><br>тихо сфокусированных людей в 78 странах.',
+        'auth.sub':        'Войдите чтобы сохранять сессии и отслеживать серию.',
+        'auth.signin':     'Войти',
+        'auth.signup':     'Создать аккаунт',
+        'auth.email':      'Почта',
+        'auth.password':   'Пароль',
+      }
+    };
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('ff-lang', lang);
+
+      // Plain-text nodes
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const val = TRANSLATIONS[lang][key];
+        if (val !== undefined) el.textContent = val;
+      });
+
+      // HTML nodes (span tags inside, etc.)
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.dataset.i18nHtml;
+        const val = TRANSLATIONS[lang][key];
+        if (val !== undefined) el.innerHTML = val;
+      });
+
+      // Toggle button label
+      const btn = document.getElementById('langBtn');
+      if (btn) btn.textContent = lang === 'en' ? 'RU' : 'EN';
+
+      // Refresh live timer label to match current mode
+      if (typeof mode !== 'undefined' && lblEl) {
+        const modeKeyMap = { 'Focus': 'mode.focus', 'Short Break': 'mode.short', 'Long Break': 'mode.long' };
+        const modeLabel = TRANSLATIONS[lang][modeKeyMap[mode]] || mode;
+        lblEl.textContent = `— ${modeLabel.toUpperCase()} —`;
+      }
+
+      // Refresh play/pause button label to match running state
+      if (typeof running !== 'undefined' && playLbl) {
+        playLbl.textContent = running
+          ? (TRANSLATIONS[lang]['timer.pause'] || 'Pause')
+          : (typeof remaining !== 'undefined' && remaining < duration
+              ? (TRANSLATIONS[lang]['timer.resume'] || 'Resume')
+              : (TRANSLATIONS[lang]['timer.begin'] || 'Begin'));
+      }
+    }
+
+    function toggleLang() {
+      setLang(currentLang === 'en' ? 'ru' : 'en');
+    }
+
     // ── Init ──────────────────────────────────────
     draw();
+    // Apply stored language (after draw so playLbl/lblEl exist)
+    setLang(currentLang);
   </script>
 </body>
 </html>
