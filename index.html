@@ -2612,10 +2612,21 @@
     let currentUser = null;
     let authMode = 'signin';
 
-    sb.auth.onAuthStateChange((_event, session) => {
+    // Restore session immediately from localStorage — no flicker on refresh
+    sb.auth.getSession().then(({ data: { session } }) => {
       currentUser = session?.user ?? null;
       updateAuthUI();
-      if (currentUser) loadUserData(); // fire-and-forget, no await
+      if (currentUser) loadUserData();
+    });
+
+    // Keep session in sync on sign-in / sign-out / token refresh
+    sb.auth.onAuthStateChange((_event, session) => {
+      const nextUser = session?.user ?? null;
+      // Skip if it's just the initial restore (already handled by getSession above)
+      if (nextUser?.id === currentUser?.id) return;
+      currentUser = nextUser;
+      updateAuthUI();
+      if (currentUser) loadUserData();
     });
 
     // ── Auth UI helpers ───────────────────────────
