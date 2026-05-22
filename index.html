@@ -2068,10 +2068,13 @@
       .hero { padding: 88px 0 48px; }
 
       /* Replace 12-col grid with simple flex column — eliminates all
-         grid-column / align-items: end chaos on narrow viewports */
+         grid-column / align-items: end chaos on narrow viewports.
+         align-items: stretch overrides the base "end" which in flex
+         would push everything to the right edge. */
       .hero-grid {
         display: flex;
         flex-direction: column;
+        align-items: stretch;
         gap: 0;
       }
 
