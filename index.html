@@ -251,25 +251,22 @@
     .nav-signout:hover { color: var(--signal); border-color: var(--signal); }
 
     /* ── Analytics Page ── */
+    /* Flex column: nav stays at top, body scrolls independently.
+       overflow-y is on .analytics-body only — NOT on the page root.
+       This avoids sticky/scroll conflicts in iOS Safari. */
     .analytics-page {
       display: none;
       position: fixed; inset: 0;
-      /* z-index above nav (100) so nothing bleeds through */
       z-index: 110;
       background: var(--paper);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      flex-direction: column;
     }
-    .analytics-page.open { display: block; }
+    .analytics-page.open { display: flex; }
 
-    /* Sticky internal nav bar — replaces reliance on the main nav */
+    /* Non-scrolling header — plain flex item, no sticky needed */
     .analytics-nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(243, 239, 230, 0.92);
-      backdrop-filter: blur(14px) saturate(140%);
-      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      flex-shrink: 0;
+      background: rgba(243, 239, 230, 0.95);
       border-bottom: 1px solid var(--ink);
       display: flex;
       align-items: center;
@@ -298,9 +295,17 @@
       color: var(--ink);
       border: 1px solid var(--ink);
       padding: 7px 14px;
+      cursor: pointer;
       transition: background 150ms ease, color 150ms ease;
     }
     .analytics-back:hover { background: var(--ink); color: var(--paper); }
+
+    /* Scrollable body area */
+    .analytics-body {
+      flex: 1 1 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
     .analytics-wrap {
       max-width: 1000px;
@@ -2520,47 +2525,50 @@
       </div>
     </div>
 
-    <div class="analytics-wrap">
-      <div class="analytics-header">
-        <h2 class="analytics-title">Your Focus <em>Ledger</em></h2>
-      </div>
+    <!-- Scrollable body — overflow-y:auto lives here, NOT on .analytics-page -->
+    <div class="analytics-body">
+      <div class="analytics-wrap">
+        <div class="analytics-header">
+          <h2 class="analytics-title">Your Focus <em>Ledger</em></h2>
+        </div>
 
-      <!-- Stats row -->
-      <div class="analytics-stats">
-        <div class="a-stat">
-          <div class="a-stat-val signal" id="aSessions">—</div>
-          <div class="a-stat-lbl">Sessions this week</div>
+        <!-- Stats row -->
+        <div class="analytics-stats">
+          <div class="a-stat">
+            <div class="a-stat-val signal" id="aSessions">—</div>
+            <div class="a-stat-lbl">Sessions this week</div>
+          </div>
+          <div class="a-stat">
+            <div class="a-stat-val" id="aHours">—</div>
+            <div class="a-stat-lbl">Hours focused</div>
+          </div>
+          <div class="a-stat">
+            <div class="a-stat-val" id="aBestDay">—</div>
+            <div class="a-stat-lbl">Best day (min)</div>
+          </div>
+          <div class="a-stat">
+            <div class="a-stat-val" id="aStreak">—</div>
+            <div class="a-stat-lbl">Day streak</div>
+          </div>
         </div>
-        <div class="a-stat">
-          <div class="a-stat-val" id="aHours">—</div>
-          <div class="a-stat-lbl">Hours focused</div>
-        </div>
-        <div class="a-stat">
-          <div class="a-stat-val" id="aBestDay">—</div>
-          <div class="a-stat-lbl">Best day (min)</div>
-        </div>
-        <div class="a-stat">
-          <div class="a-stat-val" id="aStreak">—</div>
-          <div class="a-stat-lbl">Day streak</div>
-        </div>
-      </div>
 
-      <!-- Chart -->
-      <div class="chart-section">
-        <div class="chart-label">14-day focus history (minutes)</div>
-        <div class="chart-canvas-wrap">
-          <canvas id="focusChart" height="180"></canvas>
+        <!-- Chart -->
+        <div class="chart-section">
+          <div class="chart-label">14-day focus history (minutes)</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="focusChart" height="180"></canvas>
+          </div>
         </div>
-      </div>
 
-      <!-- Recent sessions ledger -->
-      <div class="ledger-section">
-        <div class="chart-label">Recent sessions</div>
-        <div class="ledger-row header">
-          <span>Take</span><span>Note</span><span>Duration</span><span>Type</span>
-        </div>
-        <div id="aLedger">
-          <div class="analytics-empty">No sessions yet. Start the timer.</div>
+        <!-- Recent sessions ledger -->
+        <div class="ledger-section">
+          <div class="chart-label">Recent sessions</div>
+          <div class="ledger-row header">
+            <span>Take</span><span>Note</span><span>Duration</span><span>Type</span>
+          </div>
+          <div id="aLedger">
+            <div class="analytics-empty">No sessions yet. Start the timer.</div>
+          </div>
         </div>
       </div>
     </div>
