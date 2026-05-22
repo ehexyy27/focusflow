@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#f3efe6"/>
+
+  <!-- Signal bar at bottom -->
+  <rect x="0" y="480" width="512" height="32" fill="#ff2d1a"/>
+
+  <!-- Letter F — serif, editorial -->
+  <text
+    x="256"
+    y="358"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="340"
+    font-weight="700"
+    fill="#0d0d0c"
+    text-anchor="middle"
+    dominant-baseline="auto"
+  >F</text>
+</svg>

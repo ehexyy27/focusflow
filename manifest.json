@@ -1,0 +1,35 @@
+{
+  "name": "FocusFlow",
+  "short_name": "FocusFlow",
+  "description": "Deep work timer for knowledge workers who refuse to ship distracted.",
+  "start_url": "/focusflow/",
+  "scope": "/focusflow/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f3efe6",
+  "theme_color": "#0d0d0c",
+  "lang": "en",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Focus Session",
+      "short_name": "Focus",
+      "url": "/focusflow/#app",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ]
+}
