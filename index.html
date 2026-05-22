@@ -2736,17 +2736,133 @@
       draw();
     }
 
-    // ── Sounds (visual only) ──────────────────────
+    // ── Ambient Sounds — Web Audio API ───────────
+    let audioCtx = null;
+    const soundNodes = {};
+    const SOUND_NAMES = { rain: 'Heavy rain', forest: 'Spruce forest', cafe: 'Quiet café', waves: 'Atlantic waves' };
+
+    function getCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function makeNoise(ctx, duration = 3) {
+      const sr = ctx.sampleRate;
+      const buf = ctx.createBuffer(2, sr * duration, sr);
+      for (let c = 0; c < 2; c++) {
+        const d = buf.getChannelData(c);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
+      return buf;
+    }
+
+    // Pink-ish noise via cascaded filters
+    function makePinkSource(ctx) {
+      const src = ctx.createBufferSource();
+      src.buffer = makeNoise(ctx, 4);
+      src.loop = true;
+      // Approximate pink noise with a shelving filter
+      const shelf = ctx.createBiquadFilter();
+      shelf.type = 'lowshelf';
+      shelf.frequency.value = 1000;
+      shelf.gain.value = 8;
+      src.connect(shelf);
+      return { src, out: shelf };
+    }
+
+    const soundBuilders = {
+      rain(ctx) {
+        const gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+        const { src, out } = makePinkSource(ctx);
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 0.3;
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 300;
+        out.connect(hp); hp.connect(lp); lp.connect(gain);
+        src.start();
+        return { src, gain };
+      },
+      waves(ctx) {
+        const gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+        const { src, out } = makePinkSource(ctx);
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700; lp.Q.value = 2;
+        // LFO for wave swell
+        const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.12;
+        const lfoG = ctx.createGain(); lfoG.gain.value = 0.25;
+        lfo.connect(lfoG); lfoG.connect(gain.gain);
+        out.connect(lp); lp.connect(gain);
+        src.start(); lfo.start();
+        return { src, gain, extra: [lfo] };
+      },
+      cafe(ctx) {
+        const gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+        const { src, out } = makePinkSource(ctx);
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2200;
+        const peak = ctx.createBiquadFilter(); peak.type = 'peaking'; peak.frequency.value = 900; peak.gain.value = 5; peak.Q.value = 0.8;
+        // Subtle LFO for crowd murmur
+        const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.07;
+        const lfoG = ctx.createGain(); lfoG.gain.value = 0.1;
+        lfo.connect(lfoG); lfoG.connect(gain.gain);
+        out.connect(lp); lp.connect(peak); peak.connect(gain);
+        src.start(); lfo.start();
+        return { src, gain, extra: [lfo] };
+      },
+      forest(ctx) {
+        const gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+        const { src, out } = makePinkSource(ctx);
+        const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1000; bp.Q.value = 0.4;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3000;
+        // Wind swell LFO
+        const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 0.06;
+        const lfoG = ctx.createGain(); lfoG.gain.value = 0.2;
+        lfo.connect(lfoG); lfoG.connect(gain.gain);
+        out.connect(bp); bp.connect(lp); lp.connect(gain);
+        src.start(); lfo.start();
+        return { src, gain, extra: [lfo] };
+      }
+    };
+
+    function startSound(type) {
+      const ctx = getCtx();
+      stopSoundNodes(type);
+      const nodes = soundBuilders[type](ctx);
+      soundNodes[type] = nodes;
+      // Fade in over 1.5s
+      nodes.gain.gain.cancelScheduledValues(ctx.currentTime);
+      nodes.gain.gain.setValueAtTime(0, ctx.currentTime);
+      nodes.gain.gain.linearRampToValueAtTime(0.45, ctx.currentTime + 1.5);
+      toast(`♪ ${SOUND_NAMES[type]} — playing`);
+    }
+
+    function stopSoundNodes(type) {
+      const n = soundNodes[type];
+      if (!n) return;
+      const ctx = getCtx();
+      n.gain.gain.cancelScheduledValues(ctx.currentTime);
+      n.gain.gain.setValueAtTime(n.gain.gain.value, ctx.currentTime);
+      n.gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+      setTimeout(() => {
+        try { n.src.stop(); } catch(e) {}
+        (n.extra || []).forEach(x => { try { x.stop(); } catch(e) {} });
+        delete soundNodes[type];
+      }, 1100);
+    }
+
     function toggleSound(btn, type) {
       const wasOn = btn.classList.contains('on');
-      document.querySelectorAll('.snd').forEach(s => s.classList.remove('on'));
+      document.querySelectorAll('.snd').forEach(s => {
+        if (s !== btn && s.classList.contains('on')) {
+          s.classList.remove('on');
+          stopSoundNodes(s.getAttribute('onclick').match(/'(\w+)'\)/)[1]);
+        }
+      });
       if (!wasOn) {
         btn.classList.add('on');
-        const names = { rain: 'Heavy rain', forest: 'Spruce forest', cafe: 'Quiet café', waves: 'Atlantic waves' };
-        toast(`♪ ${names[type]} — playing`);
         activeSound = type;
+        startSound(type);
       } else {
+        btn.classList.remove('on');
         activeSound = null;
+        stopSoundNodes(type);
         toast('Sound off');
       }
     }
