@@ -3054,9 +3054,9 @@
       draw();
     }
 
-    function skipSession() { complete(); }
+    function skipSession() { complete(true); }
 
-    function complete() {
+    function complete(skipped = false) {
       const wasRunning = running;
       const elapsed = duration - remaining;
       pause();
@@ -3087,14 +3087,16 @@
         saveSession(actualMinutes, isFullSession, RECEIPT_QUIPS[(receiptCount) % RECEIPT_QUIPS.length]);
         toast('Receipt printed. Take a real break — water, window, walk.');
 
-        const notifQuip = RECEIPT_QUIPS[(receiptCount - 1) % RECEIPT_QUIPS.length];
-        const ru = currentLang === 'ru';
-        fireNotif(
-          ru ? `Сессия завершена — ${actualMinutes} мин` : `Session done — ${actualMinutes} min`,
-          notifQuip
-        );
-      } else {
-        // Break finished — nudge back to work
+        if (!skipped) {
+          const notifQuip = RECEIPT_QUIPS[(receiptCount - 1) % RECEIPT_QUIPS.length];
+          const ru = currentLang === 'ru';
+          fireNotif(
+            ru ? `Сессия завершена — ${actualMinutes} мин` : `Session done — ${actualMinutes} min`,
+            notifQuip
+          );
+        }
+      } else if (!skipped) {
+        // Break finished naturally — nudge back to work
         const ru = currentLang === 'ru';
         fireNotif(
           ru ? 'Перерыв окончен — FocusFlow' : 'Break over — FocusFlow',
