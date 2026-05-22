@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 
   <style>
     /* ──────────────────────────────────────────────
@@ -227,6 +228,17 @@
       color: var(--muted);
       letter-spacing: 0.04em;
     }
+    .nav-analytics {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+      padding: 5px 12px;
+      letter-spacing: 0.04em;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .nav-analytics:hover { background: var(--ink); color: var(--paper); }
+
     .nav-signout {
       font-size: 11.5px;
       font-weight: 600;
@@ -237,6 +249,155 @@
       transition: color 150ms ease, border-color 150ms ease;
     }
     .nav-signout:hover { color: var(--signal); border-color: var(--signal); }
+
+    /* ── Analytics Page ── */
+    .analytics-page {
+      display: none;
+      position: fixed; inset: 0; z-index: 90;
+      background: var(--paper);
+      overflow-y: auto;
+      padding-top: 80px;
+    }
+    .analytics-page.open { display: block; }
+
+    .analytics-wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px var(--pad) 80px;
+    }
+
+    .analytics-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--ink);
+      margin-bottom: 40px;
+    }
+
+    .analytics-title {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .analytics-title em {
+      font-style: italic;
+      color: var(--signal);
+    }
+
+    .analytics-back {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 150ms ease, border-color 150ms ease;
+    }
+    .analytics-back:hover { color: var(--ink); border-color: var(--ink); }
+
+    .analytics-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--ink);
+      margin-bottom: 40px;
+    }
+
+    .a-stat {
+      padding: 24px 20px;
+      border-right: 1px solid var(--ink);
+    }
+    .a-stat:last-child { border-right: none; }
+
+    .a-stat-val {
+      font-family: var(--serif);
+      font-size: 2.8rem;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .a-stat-val.signal { color: var(--signal); }
+
+    .a-stat-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .chart-section {
+      margin-bottom: 48px;
+    }
+
+    .chart-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chart-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .chart-canvas-wrap {
+      border: 1px solid var(--rule);
+      padding: 24px;
+      background: var(--paper-2);
+    }
+
+    .ledger-section { }
+
+    .ledger-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 80px 80px;
+      gap: 16px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 13px;
+    }
+    .ledger-row.header {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--ink);
+      padding-bottom: 8px;
+    }
+    .ledger-row .take { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+    .ledger-row .quip { color: var(--ink-soft); }
+    .ledger-row .dur  { font-family: var(--mono); text-align: right; }
+    .ledger-row .tag  {
+      font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; text-align: right;
+      color: var(--muted);
+    }
+    .ledger-row .tag.full { color: var(--signal); }
+
+    .analytics-empty {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-style: italic;
+    }
 
     /* ── Auth Modal ── */
     .auth-overlay {
@@ -1848,6 +2009,7 @@
       </ul>
       <div class="nav-user" id="navUser">
         <span class="nav-user-name" id="navUserName"></span>
+        <button class="nav-analytics" onclick="showAnalytics()">Analytics</button>
         <button class="nav-signout" onclick="handleSignOut()">Sign out</button>
       </div>
       <button class="nav-cta" id="navCta" onclick="openAuth()">Begin a Session</button>
@@ -2316,6 +2478,55 @@
       <div class="colossus" aria-hidden="true">Focus<em>Flow</em></div>
     </div>
   </footer>
+
+  <!-- Analytics Page -->
+  <div class="analytics-page" id="analyticsPage">
+    <div class="analytics-wrap">
+      <div class="analytics-header">
+        <h2 class="analytics-title">Your Focus <em>Ledger</em></h2>
+        <button class="analytics-back" onclick="hideAnalytics()">← Back to Timer</button>
+      </div>
+
+      <!-- Stats row -->
+      <div class="analytics-stats">
+        <div class="a-stat">
+          <div class="a-stat-val signal" id="aSessions">—</div>
+          <div class="a-stat-lbl">Sessions this week</div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-val" id="aHours">—</div>
+          <div class="a-stat-lbl">Hours focused</div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-val" id="aBestDay">—</div>
+          <div class="a-stat-lbl">Best day (min)</div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-val" id="aStreak">—</div>
+          <div class="a-stat-lbl">Day streak</div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-section">
+        <div class="chart-label">14-day focus history (minutes)</div>
+        <div class="chart-canvas-wrap">
+          <canvas id="focusChart" height="180"></canvas>
+        </div>
+      </div>
+
+      <!-- Recent sessions ledger -->
+      <div class="ledger-section">
+        <div class="chart-label">Recent sessions</div>
+        <div class="ledger-row header">
+          <span>Take</span><span>Note</span><span>Duration</span><span>Type</span>
+        </div>
+        <div id="aLedger">
+          <div class="analytics-empty">No sessions yet. Start the timer.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Auth Modal -->
   <div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
@@ -2861,6 +3072,103 @@
         stopSoundNodes(type);
         toast('Sound off');
       }
+    }
+
+    // ── Analytics ─────────────────────────────────
+    let chartInstance = null;
+
+    function showAnalytics() {
+      document.getElementById('analyticsPage').classList.add('open');
+      loadAnalytics();
+    }
+
+    function hideAnalytics() {
+      document.getElementById('analyticsPage').classList.remove('open');
+    }
+
+    async function loadAnalytics() {
+      if (!currentUser) return;
+
+      // Fetch last 30 days
+      const from = new Date(); from.setDate(from.getDate() - 29); from.setHours(0,0,0,0);
+      const { data, error } = await sb
+        .from('sessions')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .eq('mode', 'Focus')
+        .gte('created_at', from.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (error || !data) return;
+
+      // Build 14-day buckets
+      const labels = [], values = [];
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        const mins = data.filter(s => s.created_at.slice(0, 10) === key)
+                         .reduce((a, s) => a + s.duration_minutes, 0);
+        labels.push(d.toLocaleDateString('en', { month: 'short', day: 'numeric' }));
+        values.push(mins);
+      }
+
+      // Weekly stats
+      const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 6); weekAgo.setHours(0,0,0,0);
+      const weekData = data.filter(s => new Date(s.created_at) >= weekAgo);
+      const weekSessions = weekData.length;
+      const weekMins = weekData.reduce((a, s) => a + s.duration_minutes, 0);
+      const bestDay = Math.max(...values.slice(-7), 0);
+
+      document.getElementById('aSessions').textContent = weekSessions;
+      document.getElementById('aHours').textContent = (weekMins / 60).toFixed(1) + 'h';
+      document.getElementById('aBestDay').textContent = bestDay || '—';
+      document.getElementById('aStreak').textContent = streak;
+
+      // Render chart
+      const ctx = document.getElementById('focusChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: values.map(v => v > 0 ? '#ff2d1a' : 'rgba(13,13,12,0.08)'),
+            borderWidth: 0,
+            borderRadius: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: {
+            callbacks: { label: ctx => ` ${ctx.raw} min` },
+            backgroundColor: '#0d0d0c', titleColor: '#f3efe6', bodyColor: '#f3efe6',
+            padding: 10, cornerRadius: 0,
+          }},
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: 'rgba(13,13,12,0.45)' } },
+            y: { grid: { color: 'rgba(13,13,12,0.06)' }, ticks: { font: { family: 'Inter', size: 11 }, color: 'rgba(13,13,12,0.45)' }, beginAtZero: true }
+          }
+        }
+      });
+
+      // Ledger rows
+      const ledger = document.getElementById('aLedger');
+      if (!data.length) {
+        ledger.innerHTML = '<div class="analytics-empty">No sessions yet. Start the timer.</div>';
+        return;
+      }
+      ledger.innerHTML = data.slice(0, 20).map((s, i) => {
+        const d = new Date(s.created_at);
+        const time = d.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit' });
+        const date = d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+        return `<div class="ledger-row">
+          <span class="take">№${String(data.length - i).padStart(3,'0')}</span>
+          <span class="quip">${s.quip || '—'} <span style="color:var(--muted-2);font-size:11px">${date} · ${time}</span></span>
+          <span class="dur">${s.duration_minutes} min</span>
+          <span class="tag ${s.is_full_session ? 'full' : ''}">${s.is_full_session ? 'Full' : 'Partial'}</span>
+        </div>`;
+      }).join('');
     }
 
     // ── Toast ─────────────────────────────────────
