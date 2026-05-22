@@ -2259,11 +2259,9 @@
       <div class="timer-grid">
 
         <div class="timer-head">
-          <div class="left num-mark">Chapter 01 — The Instrument</div>
-          <div class="center">
-            A timer that <b>respects</b> the work.
-          </div>
-          <div class="right num-mark">No sign-up · No tracking</div>
+          <div class="left num-mark" data-i18n="timer.head.chapter">Chapter 01 — The Instrument</div>
+          <div class="center" data-i18n-html="timer.head.tagline">A timer that <b>respects</b> the work.</div>
+          <div class="right num-mark" data-i18n="timer.head.note">No sign-up · No tracking</div>
         </div>
 
         <!-- LEFT — mode tabs -->
@@ -2286,7 +2284,7 @@
               <span class="dur">15 min</span>
             </button>
           </div>
-          <p class="caption">
+          <p class="caption" data-i18n="timer.caption">
             The classic 25/5 cadence is the default. Switch to a longer block for the deep stuff — a paper, a hard bug, a difficult conversation with the page.
           </p>
         </aside>
@@ -2392,22 +2390,22 @@
         <div class="sounds">
           <button class="snd" onclick="toggleSound(this,'rain')">
             <span class="snd-num">01 · ƒ</span>
-            <span class="snd-name"><em>Heavy</em> rain</span>
+            <span class="snd-name" data-i18n-html="sound.rain"><em>Heavy</em> rain</span>
             <span class="snd-glyph">⛈</span>
           </button>
           <button class="snd" onclick="toggleSound(this,'forest')">
             <span class="snd-num">02 · ƒ</span>
-            <span class="snd-name"><em>Spruce</em> forest</span>
+            <span class="snd-name" data-i18n-html="sound.forest"><em>Spruce</em> forest</span>
             <span class="snd-glyph">❦</span>
           </button>
           <button class="snd" onclick="toggleSound(this,'cafe')">
             <span class="snd-num">03 · ƒ</span>
-            <span class="snd-name"><em>Quiet</em> café</span>
+            <span class="snd-name" data-i18n-html="sound.cafe"><em>Quiet</em> café</span>
             <span class="snd-glyph">☕</span>
           </button>
           <button class="snd" onclick="toggleSound(this,'waves')">
             <span class="snd-num">04 · ƒ</span>
-            <span class="snd-name"><em>Atlantic</em> waves</span>
+            <span class="snd-name" data-i18n-html="sound.waves"><em>Atlantic</em> waves</span>
             <span class="snd-glyph">≈</span>
           </button>
         </div>
@@ -2420,18 +2418,15 @@
   <section class="features" id="features">
     <div class="wrap">
       <div class="feat-head">
-        <div class="label">Chapter 02 · <b>The Method</b></div>
-        <h2>
-          Built for deep work,<br>
-          <em>designed to <span class="strike">disappear</span></em>.
-        </h2>
+        <div class="label" data-i18n-html="feat.chapter">Chapter 02 · <b>The Method</b></div>
+        <h2 data-i18n-html="feat.h2">Built for deep work,<br><em>designed to <span class="strike">disappear</span></em>.</h2>
       </div>
 
       <div class="bento">
         <article class="cell c1">
-          <div class="cnum"><span>01 / six</span><span>Anchor</span></div>
-          <h3 class="ctitle">Pomodoro &<br><em>custom</em> intervals.</h3>
-          <p class="ctext">
+          <div class="cnum"><span>01 / six</span><span data-i18n="feat.c1.tag">Anchor</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c1.title">Pomodoro &amp;<br><em>custom</em> intervals.</h3>
+          <p class="ctext" data-i18n="feat.c1.text">
             Classic 25/5 rhythm out of the box. Or invent your own — 52 on, 17 off, 90-minute deep blocks, whatever matches your brain on a given day. The instrument bends to you, not the other way around.
           </p>
           <svg class="clockviz" viewBox="0 0 240 240" aria-hidden="true">
@@ -2443,34 +2438,34 @@
         </article>
 
         <article class="cell c2">
-          <div class="cnum"><span>02 / six</span><span>Insight</span></div>
-          <h3 class="ctitle"><em>Focus</em> analytics.</h3>
-          <p class="ctext">Daily, weekly, monthly. Discover when your brain actually shows up, then protect those hours like an animal.</p>
+          <div class="cnum"><span>02 / six</span><span data-i18n="feat.c2.tag">Insight</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c2.title"><em>Focus</em> analytics.</h3>
+          <p class="ctext" data-i18n="feat.c2.text">Daily, weekly, monthly. Discover when your brain actually shows up, then protect those hours like an animal.</p>
         </article>
 
         <article class="cell c3">
-          <div class="cnum"><span>03 / six</span><span>Sound</span></div>
-          <h3 class="ctitle">Ambient<br>fields.</h3>
-          <p class="ctext">Rain. Forest. Café. Ocean. Twelve hand-recorded loops engineered to drown the open-plan office.</p>
+          <div class="cnum"><span>03 / six</span><span data-i18n="feat.c3.tag">Sound</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c3.title">Ambient<br>fields.</h3>
+          <p class="ctext" data-i18n="feat.c3.text">Rain. Forest. Café. Ocean. Twelve hand-recorded loops engineered to drown the open-plan office.</p>
         </article>
 
         <article class="cell c4">
-          <div class="cnum"><span>04 / six</span><span>Calm</span></div>
-          <h3 class="ctitle"><em>Gentle</em> interruptions.</h3>
-          <p class="ctext">A single chime when the block ends. No popups, no badges, no shame for being absorbed. You'll hear it when it matters.</p>
+          <div class="cnum"><span>04 / six</span><span data-i18n="feat.c4.tag">Calm</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c4.title"><em>Gentle</em> interruptions.</h3>
+          <p class="ctext" data-i18n="feat.c4.text">A single chime when the block ends. No popups, no badges, no shame for being absorbed. You'll hear it when it matters.</p>
         </article>
 
         <article class="cell c5">
-          <div class="cnum"><span>05 / six</span><span>Habit</span></div>
-          <h3 class="ctitle"><em>Forgiving</em> streaks.</h3>
-          <p class="ctext">Two free skips a month. Life happens; the system bends.</p>
+          <div class="cnum"><span>05 / six</span><span data-i18n="feat.c5.tag">Habit</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c5.title"><em>Forgiving</em> streaks.</h3>
+          <p class="ctext" data-i18n="feat.c5.text">Two free skips a month. Life happens; the system bends.</p>
         </article>
 
         <article class="cell c6">
-          <div class="cnum"><span>06 / six</span><span>Together</span></div>
-          <h3 class="ctitle">Team <em>focus</em> rooms.</h3>
-          <p class="ctext">Sit in silence together. Remote, synchronous, real.</p>
-          <div class="big-stat">38<sub>% more output, reported</sub></div>
+          <div class="cnum"><span>06 / six</span><span data-i18n="feat.c6.tag">Together</span></div>
+          <h3 class="ctitle" data-i18n-html="feat.c6.title">Team <em>focus</em> rooms.</h3>
+          <p class="ctext" data-i18n="feat.c6.text">Sit in silence together. Remote, synchronous, real.</p>
+          <div class="big-stat">38<sub data-i18n="feat.c6.stat">% more output, reported</sub></div>
         </article>
       </div>
     </div>
@@ -2480,7 +2475,7 @@
   <section class="proof" id="proof">
     <div class="wrap">
       <div class="proof-grid">
-        <div class="proof-eye"><b>★★★★★</b><br>From the field</div>
+        <div class="proof-eye"><b>★★★★★</b><br><span data-i18n="proof.stars">From the field</span></div>
         <blockquote class="proof-quote" data-i18n-html="proof.quote">
           FocusFlow cut my context-switching <em>in half</em>. I ship more in four focused hours than I used to in <em>eight distracted ones</em>.
         </blockquote>
@@ -2496,7 +2491,7 @@
           </div>
           <div class="proof-author">
             <strong>Michael Merk</strong>
-            Creator, FocusFlow · building in public
+            <span data-i18n="proof.author.role">Creator, FocusFlow · building in public</span>
           </div>
           <div class="proof-stars">★★★★★</div>
         </div>
@@ -2508,68 +2503,68 @@
   <section class="pricing" id="pricing">
     <div class="wrap">
       <div class="pricing-head">
-        <h2>Start <em>free</em>.<br>Upgrade when the<br>work demands it.</h2>
-        <p class="lede">No credit card. No dark patterns. Cancel with one click. The free plan is genuinely useful — most people stay on it for months.</p>
+        <h2 data-i18n-html="pricing.h2">Start <em>free</em>.<br>Upgrade when the<br>work demands it.</h2>
+        <p class="lede" data-i18n="pricing.lede">No credit card. No dark patterns. Cancel with one click. The free plan is genuinely useful — most people stay on it for months.</p>
       </div>
 
       <div class="price-grid">
 
         <article class="p-col">
           <div class="p-tier"><span>Plan 01</span></div>
-          <h3 class="p-name">Free <em>forever</em>.</h3>
+          <h3 class="p-name" data-i18n-html="plan.free.name">Free <em>forever</em>.</h3>
           <div class="p-price-row">
             <div class="p-price">$0</div>
-            <div class="p-period">No card<br>No timer</div>
+            <div class="p-period" data-i18n-html="plan.free.period">No card<br>No timer</div>
           </div>
           <ul class="p-feats">
-            <li class="p-feat"><span class="ck">✓</span><span>Five focus sessions per day</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Standard 25/5 Pomodoro cadence</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Seven-day session history</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Two ambient soundscapes (rain, café)</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Local-first, no account required</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.free.f1">Five focus sessions per day</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.free.f2">Standard 25/5 Pomodoro cadence</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.free.f3">Seven-day session history</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.free.f4">Two ambient soundscapes (rain, café)</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.free.f5">Local-first, no account required</span></li>
           </ul>
           <button class="p-btn" onclick="toast('No account needed — just click Begin above.')">
-            <span>Begin Free</span><span>→</span>
+            <span data-i18n="plan.free.btn">Begin Free</span><span>→</span>
           </button>
         </article>
 
         <article class="p-col hot">
-          <div class="p-tier"><span>Plan 02</span><span class="tag">Most chosen</span></div>
-          <h3 class="p-name"><em>Pro.</em> For the daily practice.</h3>
+          <div class="p-tier"><span>Plan 02</span><span class="tag" data-i18n="plan.pro.tag">Most chosen</span></div>
+          <h3 class="p-name" data-i18n-html="plan.pro.name"><em>Pro.</em> For the daily practice.</h3>
           <div class="p-price-row">
             <div class="p-price"><sup>$</sup>8<em>.</em></div>
-            <div class="p-period">per month<br>billed annually · $12 monthly</div>
+            <div class="p-period" data-i18n-html="plan.pro.period">per month<br>billed annually · $12 monthly</div>
           </div>
           <ul class="p-feats">
-            <li class="p-feat"><span class="ck">✓</span><span>Unlimited focus sessions</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Custom timer intervals (52/17, 90/20, anything)</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Full analytics — peak hours, weekly heatmaps</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>All twelve ambient soundscapes</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Streak protection — two free skips per month</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Cross-device sync (Mac, iOS, Web)</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f1">Unlimited focus sessions</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f2">Custom timer intervals (52/17, 90/20, anything)</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f3">Full analytics — peak hours, weekly heatmaps</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f4">All twelve ambient soundscapes</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f5">Streak protection — two free skips per month</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.pro.f6">Cross-device sync (Mac, iOS, Web)</span></li>
           </ul>
           <button class="p-btn" onclick="toast('14-day free trial. No card required.')">
-            <span>Start 14-Day Trial</span><span>→</span>
+            <span data-i18n="plan.pro.btn">Start 14-Day Trial</span><span>→</span>
           </button>
         </article>
 
         <article class="p-col">
           <div class="p-tier"><span>Plan 03</span></div>
-          <h3 class="p-name">Team. <em>Quiet</em> together.</h3>
+          <h3 class="p-name" data-i18n-html="plan.team.name">Team. <em>Quiet</em> together.</h3>
           <div class="p-price-row">
             <div class="p-price"><sup>$</sup>15</div>
-            <div class="p-period">per seat / month<br>min. 3 seats</div>
+            <div class="p-period" data-i18n-html="plan.team.period">per seat / month<br>min. 3 seats</div>
           </div>
           <ul class="p-feats">
-            <li class="p-feat"><span class="ck">✓</span><span>Everything in Pro, for every seat</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Shared live focus rooms (up to 12)</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Team analytics dashboard &amp; CSV export</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Admin controls &amp; SSO</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Slack &amp; Notion integrations</span></li>
-            <li class="p-feat"><span class="ck">✓</span><span>Priority support · 4-hour SLA</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f1">Everything in Pro, for every seat</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f2">Shared live focus rooms (up to 12)</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f3">Team analytics dashboard &amp; CSV export</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f4">Admin controls &amp; SSO</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f5">Slack &amp; Notion integrations</span></li>
+            <li class="p-feat"><span class="ck">✓</span><span data-i18n="plan.team.f6">Priority support · 4-hour SLA</span></li>
           </ul>
           <button class="p-btn" onclick="toast('Sales will reach out within one business day.')">
-            <span>Contact Sales</span><span>→</span>
+            <span data-i18n="plan.team.btn">Contact Sales</span><span>→</span>
           </button>
         </article>
 
@@ -2583,37 +2578,37 @@
       <div class="footer-top">
         <div class="foot-brand">
           <h3>Focus<em>Flow</em>.</h3>
-          <p>The focus timer that disappears when you need to work and shows up when you need to reflect.</p>
+          <p data-i18n="footer.tagline">The focus timer that disappears when you need to work and shows up when you need to reflect.</p>
         </div>
         <div class="foot-col">
-          <h5>Product</h5>
+          <h5 data-i18n="footer.col.product">Product</h5>
           <ul>
-            <li><a href="#app">The Timer</a></li>
-            <li><a href="#features">Analytics</a></li>
-            <li><a href="#features">Soundscapes</a></li>
-            <li><a href="#features">Team Rooms</a></li>
+            <li><a href="#app" data-i18n="footer.product.timer">The Timer</a></li>
+            <li><a href="#features" data-i18n="footer.product.analytics">Analytics</a></li>
+            <li><a href="#features" data-i18n="footer.product.sounds">Soundscapes</a></li>
+            <li><a href="#features" data-i18n="footer.product.rooms">Team Rooms</a></li>
           </ul>
         </div>
         <div class="foot-col">
-          <h5>Company</h5>
+          <h5 data-i18n="footer.col.company">Company</h5>
           <ul>
-            <li><a href="#">Field Notes</a></li>
-            <li><a href="#">Changelog</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press Kit</a></li>
+            <li><a href="#" data-i18n="footer.company.notes">Field Notes</a></li>
+            <li><a href="#" data-i18n="footer.company.changelog">Changelog</a></li>
+            <li><a href="#" data-i18n="footer.company.careers">Careers</a></li>
+            <li><a href="#" data-i18n="footer.company.press">Press Kit</a></li>
           </ul>
         </div>
         <div class="foot-col">
-          <h5>Legal</h5>
+          <h5 data-i18n="footer.col.legal">Legal</h5>
           <ul>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">Terms</a></li>
-            <li><a href="#">Security</a></li>
-            <li><a href="#">Status</a></li>
+            <li><a href="#" data-i18n="footer.legal.privacy">Privacy</a></li>
+            <li><a href="#" data-i18n="footer.legal.terms">Terms</a></li>
+            <li><a href="#" data-i18n="footer.legal.security">Security</a></li>
+            <li><a href="#" data-i18n="footer.legal.status">Status</a></li>
           </ul>
         </div>
         <div class="foot-col">
-          <h5>Contact</h5>
+          <h5 data-i18n="footer.col.contact">Contact</h5>
           <ul>
             <li><a href="https://t.me/merkwork2" target="_blank" rel="noopener">Telegram</a></li>
             <li><a href="mailto:merksecond@gmail.com">Email</a></li>
@@ -2623,7 +2618,7 @@
 
       <div class="footer-bottom">
         <div>© 2025 Michael Merk</div>
-        <div class="center">Made for people who <b>finish things</b>.</div>
+        <div class="center" data-i18n-html="footer.made">Made for people who <b>finish things</b>.</div>
         <div class="right">FocusFlow · v 2.1.4</div>
       </div>
 
@@ -2636,10 +2631,10 @@
 
     <!-- Internal sticky nav — fully self-contained, no reliance on main nav -->
     <div class="analytics-nav">
-      <span class="analytics-nav-brand">FocusFlow — <em>Analytics</em></span>
+      <span class="analytics-nav-brand">FocusFlow — <em data-i18n="analytics.navtitle">Analytics</em></span>
       <div class="analytics-nav-actions">
-        <button class="analytics-share" onclick="shareStreak()">↗ Share streak</button>
-        <button class="analytics-back" onclick="hideAnalytics()">← Back to Timer</button>
+        <button class="analytics-share" onclick="shareStreak()" data-i18n="analytics.share">↗ Share streak</button>
+        <button class="analytics-back" onclick="hideAnalytics()" data-i18n="analytics.back">← Back to Timer</button>
       </div>
     </div>
 
@@ -2647,32 +2642,32 @@
     <div class="analytics-body">
       <div class="analytics-wrap">
         <div class="analytics-header">
-          <h2 class="analytics-title">Your Focus <em>Ledger</em></h2>
+          <h2 class="analytics-title" data-i18n-html="analytics.title">Your Focus <em>Ledger</em></h2>
         </div>
 
         <!-- Stats row -->
         <div class="analytics-stats">
           <div class="a-stat">
             <div class="a-stat-val signal" id="aSessions">—</div>
-            <div class="a-stat-lbl">Sessions this week</div>
+            <div class="a-stat-lbl" data-i18n="analytics.stat.sessions">Sessions this week</div>
           </div>
           <div class="a-stat">
             <div class="a-stat-val" id="aHours">—</div>
-            <div class="a-stat-lbl">Hours focused</div>
+            <div class="a-stat-lbl" data-i18n="analytics.stat.hours">Hours focused</div>
           </div>
           <div class="a-stat">
             <div class="a-stat-val" id="aBestDay">—</div>
-            <div class="a-stat-lbl">Best day (min)</div>
+            <div class="a-stat-lbl" data-i18n="analytics.stat.bestday">Best day (min)</div>
           </div>
           <div class="a-stat">
             <div class="a-stat-val" id="aStreak">—</div>
-            <div class="a-stat-lbl">Day streak</div>
+            <div class="a-stat-lbl" data-i18n="analytics.stat.streak">Day streak</div>
           </div>
         </div>
 
         <!-- Chart -->
         <div class="chart-section">
-          <div class="chart-label">14-day focus history (minutes)</div>
+          <div class="chart-label" data-i18n="analytics.chart.label">14-day focus history (minutes)</div>
           <div class="chart-canvas-wrap">
             <canvas id="focusChart" height="180"></canvas>
           </div>
@@ -2680,12 +2675,12 @@
 
         <!-- Recent sessions ledger -->
         <div class="ledger-section">
-          <div class="chart-label">Recent sessions</div>
+          <div class="chart-label" data-i18n="analytics.sessions.label">Recent sessions</div>
           <div class="ledger-row header">
-            <span>Take</span><span>Note</span><span>Duration</span><span>Type</span>
+            <span data-i18n="analytics.table.take">Take</span><span data-i18n="analytics.table.note">Note</span><span data-i18n="analytics.table.duration">Duration</span><span data-i18n="analytics.table.type">Type</span>
           </div>
           <div id="aLedger">
-            <div class="analytics-empty">No sessions yet. Start the timer.</div>
+            <div class="analytics-empty" data-i18n="analytics.empty">No sessions yet. Start the timer.</div>
           </div>
         </div>
       </div>
@@ -3540,6 +3535,106 @@
         'auth.signup':     'Create Account',
         'auth.email':      'Email',
         'auth.password':   'Password',
+        // Timer section
+        'timer.head.chapter': 'Chapter 01 — The Instrument',
+        'timer.head.tagline': 'A timer that <b>respects</b> the work.',
+        'timer.head.note':    'No sign-up · No tracking',
+        'timer.caption':  'The classic 25/5 cadence is the default. Switch to a longer block for the deep stuff — a paper, a hard bug, a difficult conversation with the page.',
+        // Sounds
+        'sound.rain':    '<em>Heavy</em> rain',
+        'sound.forest':  '<em>Spruce</em> forest',
+        'sound.cafe':    '<em>Quiet</em> café',
+        'sound.waves':   '<em>Atlantic</em> waves',
+        // Features
+        'feat.chapter':  'Chapter 02 · <b>The Method</b>',
+        'feat.h2':       'Built for deep work,<br><em>designed to <span class="strike">disappear</span></em>.',
+        'feat.c1.tag':   'Anchor',
+        'feat.c1.title': 'Pomodoro &amp;<br><em>custom</em> intervals.',
+        'feat.c1.text':  'Classic 25/5 rhythm out of the box. Or invent your own — 52 on, 17 off, 90-minute deep blocks, whatever matches your brain on a given day. The instrument bends to you, not the other way around.',
+        'feat.c2.tag':   'Insight',
+        'feat.c2.title': '<em>Focus</em> analytics.',
+        'feat.c2.text':  'Daily, weekly, monthly. Discover when your brain actually shows up, then protect those hours like an animal.',
+        'feat.c3.tag':   'Sound',
+        'feat.c3.title': 'Ambient<br>fields.',
+        'feat.c3.text':  'Rain. Forest. Café. Ocean. Twelve hand-recorded loops engineered to drown the open-plan office.',
+        'feat.c4.tag':   'Calm',
+        'feat.c4.title': '<em>Gentle</em> interruptions.',
+        'feat.c4.text':  'A single chime when the block ends. No popups, no badges, no shame for being absorbed. You\'ll hear it when it matters.',
+        'feat.c5.tag':   'Habit',
+        'feat.c5.title': '<em>Forgiving</em> streaks.',
+        'feat.c5.text':  'Two free skips a month. Life happens; the system bends.',
+        'feat.c6.tag':   'Together',
+        'feat.c6.title': 'Team <em>focus</em> rooms.',
+        'feat.c6.text':  'Sit in silence together. Remote, synchronous, real.',
+        'feat.c6.stat':  '% more output, reported',
+        // Proof
+        'proof.stars':       'From the field',
+        'proof.author.role': 'Creator, FocusFlow · building in public',
+        // Pricing
+        'pricing.h2':    'Start <em>free</em>.<br>Upgrade when the<br>work demands it.',
+        'pricing.lede':  'No credit card. No dark patterns. Cancel with one click. The free plan is genuinely useful — most people stay on it for months.',
+        'plan.free.name':   'Free <em>forever</em>.',
+        'plan.free.period': 'No card<br>No timer',
+        'plan.free.f1': 'Five focus sessions per day',
+        'plan.free.f2': 'Standard 25/5 Pomodoro cadence',
+        'plan.free.f3': 'Seven-day session history',
+        'plan.free.f4': 'Two ambient soundscapes (rain, café)',
+        'plan.free.f5': 'Local-first, no account required',
+        'plan.free.btn': 'Begin Free',
+        'plan.pro.tag':  'Most chosen',
+        'plan.pro.name': '<em>Pro.</em> For the daily practice.',
+        'plan.pro.period': 'per month<br>billed annually · $12 monthly',
+        'plan.pro.f1': 'Unlimited focus sessions',
+        'plan.pro.f2': 'Custom timer intervals (52/17, 90/20, anything)',
+        'plan.pro.f3': 'Full analytics — peak hours, weekly heatmaps',
+        'plan.pro.f4': 'All twelve ambient soundscapes',
+        'plan.pro.f5': 'Streak protection — two free skips per month',
+        'plan.pro.f6': 'Cross-device sync (Mac, iOS, Web)',
+        'plan.pro.btn': 'Start 14-Day Trial',
+        'plan.team.name':   'Team. <em>Quiet</em> together.',
+        'plan.team.period': 'per seat / month<br>min. 3 seats',
+        'plan.team.f1': 'Everything in Pro, for every seat',
+        'plan.team.f2': 'Shared live focus rooms (up to 12)',
+        'plan.team.f3': 'Team analytics dashboard & CSV export',
+        'plan.team.f4': 'Admin controls & SSO',
+        'plan.team.f5': 'Slack & Notion integrations',
+        'plan.team.f6': 'Priority support · 4-hour SLA',
+        'plan.team.btn': 'Contact Sales',
+        // Footer
+        'footer.tagline':          'The focus timer that disappears when you need to work and shows up when you need to reflect.',
+        'footer.col.product':      'Product',
+        'footer.col.company':      'Company',
+        'footer.col.legal':        'Legal',
+        'footer.col.contact':      'Contact',
+        'footer.product.timer':    'The Timer',
+        'footer.product.analytics':'Analytics',
+        'footer.product.sounds':   'Soundscapes',
+        'footer.product.rooms':    'Team Rooms',
+        'footer.company.notes':    'Field Notes',
+        'footer.company.changelog':'Changelog',
+        'footer.company.careers':  'Careers',
+        'footer.company.press':    'Press Kit',
+        'footer.legal.privacy':    'Privacy',
+        'footer.legal.terms':      'Terms',
+        'footer.legal.security':   'Security',
+        'footer.legal.status':     'Status',
+        'footer.made': 'Made for people who <b>finish things</b>.',
+        // Analytics page
+        'analytics.navtitle':          'Analytics',
+        'analytics.share':             '↗ Share streak',
+        'analytics.back':              '← Back to Timer',
+        'analytics.title':             'Your Focus <em>Ledger</em>',
+        'analytics.stat.sessions':     'Sessions this week',
+        'analytics.stat.hours':        'Hours focused',
+        'analytics.stat.bestday':      'Best day (min)',
+        'analytics.stat.streak':       'Day streak',
+        'analytics.chart.label':       '14-day focus history (minutes)',
+        'analytics.sessions.label':    'Recent sessions',
+        'analytics.table.take':        'Take',
+        'analytics.table.note':        'Note',
+        'analytics.table.duration':    'Duration',
+        'analytics.table.type':        'Type',
+        'analytics.empty':             'No sessions yet. Start the timer.',
       },
       ru: {
         'nav.timer':       'Таймер',
@@ -3584,6 +3679,106 @@
         'auth.signup':     'Создать аккаунт',
         'auth.email':      'Почта',
         'auth.password':   'Пароль',
+        // Секция таймера
+        'timer.head.chapter': 'Глава 01 — Инструмент',
+        'timer.head.tagline': 'Таймер, который <b>уважает</b> работу.',
+        'timer.head.note':    'Без регистрации · Без слежки',
+        'timer.caption':  'Классический ритм 25/5 — по умолчанию. Переключись на длинный блок для серьёзного — статьи, сложного бага, трудного разговора со страницей.',
+        // Звуки
+        'sound.rain':    '<em>Сильный</em> дождь',
+        'sound.forest':  '<em>Еловый</em> лес',
+        'sound.cafe':    '<em>Тихое</em> кафе',
+        'sound.waves':   '<em>Волны</em> Атлантики',
+        // Функции
+        'feat.chapter':  'Глава 02 · <b>Метод</b>',
+        'feat.h2':       'Создан для глубокой работы,<br><em>спроектирован чтобы <span class="strike">исчезнуть</span></em>.',
+        'feat.c1.tag':   'Основа',
+        'feat.c1.title': 'Помодоро &amp;<br><em>свои</em> интервалы.',
+        'feat.c1.text':  'Классический ритм 25/5 из коробки. Или придумай свой — 52/17, 90-минутные глубокие блоки, что угодно. Инструмент подстраивается под тебя, а не наоборот.',
+        'feat.c2.tag':   'Аналитика',
+        'feat.c2.title': '<em>Фокус</em>-аналитика.',
+        'feat.c2.text':  'День, неделя, месяц. Узнай, когда твой мозг реально работает, и защити эти часы.',
+        'feat.c3.tag':   'Звук',
+        'feat.c3.title': 'Звуковые<br>пространства.',
+        'feat.c3.text':  'Дождь. Лес. Кафе. Океан. Двенадцать записанных вживую петель, заглушающих опенспейс.',
+        'feat.c4.tag':   'Покой',
+        'feat.c4.title': '<em>Мягкие</em> напоминания.',
+        'feat.c4.text':  'Один звонок по окончании блока. Никаких всплывающих окон, значков, стыда за погружённость. Услышишь когда нужно.',
+        'feat.c5.tag':   'Привычка',
+        'feat.c5.title': '<em>Гибкие</em> серии.',
+        'feat.c5.text':  'Два пропуска в месяц. Жизнь случается — система прогибается.',
+        'feat.c6.tag':   'Вместе',
+        'feat.c6.title': 'Командные <em>фокус</em>-комнаты.',
+        'feat.c6.text':  'Молчите вместе. Удалённо, синхронно, по-настоящему.',
+        'feat.c6.stat':  '% рост продуктивности',
+        // Отзывы
+        'proof.stars':       'Из практики',
+        'proof.author.role': 'Создатель, FocusFlow · строю публично',
+        // Цены
+        'pricing.h2':    'Начни <em>бесплатно</em>.<br>Переходи когда<br>работа потребует.',
+        'pricing.lede':  'Без карты. Без тёмных паттернов. Отмена в один клик. Бесплатный план реально полезен — большинство остаётся на нём месяцами.',
+        'plan.free.name':   'Бесплатно <em>навсегда</em>.',
+        'plan.free.period': 'Без карты<br>Без ограничений',
+        'plan.free.f1': 'Пять фокус-сессий в день',
+        'plan.free.f2': 'Стандартный ритм 25/5',
+        'plan.free.f3': 'История сессий за 7 дней',
+        'plan.free.f4': 'Два звуковых фона (дождь, кафе)',
+        'plan.free.f5': 'Локально — аккаунт не нужен',
+        'plan.free.btn': 'Начать бесплатно',
+        'plan.pro.tag':  'Чаще всего выбирают',
+        'plan.pro.name': '<em>Pro.</em> Для ежедневной практики.',
+        'plan.pro.period': 'в месяц<br>при годовой оплате · $12 ежемесячно',
+        'plan.pro.f1': 'Неограниченные фокус-сессии',
+        'plan.pro.f2': 'Свои интервалы (52/17, 90/20, любые)',
+        'plan.pro.f3': 'Полная аналитика — пиковые часы, тепловые карты',
+        'plan.pro.f4': 'Все двенадцать звуковых фонов',
+        'plan.pro.f5': 'Защита серии — два пропуска в месяц',
+        'plan.pro.f6': 'Синхронизация (Mac, iOS, Web)',
+        'plan.pro.btn': 'Начать 14-дневный пробный',
+        'plan.team.name':   'Команда. <em>Тихо</em> вместе.',
+        'plan.team.period': 'за место / месяц<br>мин. 3 места',
+        'plan.team.f1': 'Всё из Pro для каждого участника',
+        'plan.team.f2': 'Общие фокус-комнаты (до 12)',
+        'plan.team.f3': 'Командный дашборд и экспорт CSV',
+        'plan.team.f4': 'Управление и SSO',
+        'plan.team.f5': 'Интеграции Slack и Notion',
+        'plan.team.f6': 'Приоритетная поддержка · SLA 4 часа',
+        'plan.team.btn': 'Связаться с отделом продаж',
+        // Футер
+        'footer.tagline':          'Таймер, который исчезает когда нужно работать и появляется когда нужно рефлексировать.',
+        'footer.col.product':      'Продукт',
+        'footer.col.company':      'Компания',
+        'footer.col.legal':        'Правовое',
+        'footer.col.contact':      'Контакт',
+        'footer.product.timer':    'Таймер',
+        'footer.product.analytics':'Аналитика',
+        'footer.product.sounds':   'Звуки',
+        'footer.product.rooms':    'Командные комнаты',
+        'footer.company.notes':    'Заметки',
+        'footer.company.changelog':'Журнал изменений',
+        'footer.company.careers':  'Вакансии',
+        'footer.company.press':    'Пресс-кит',
+        'footer.legal.privacy':    'Приватность',
+        'footer.legal.terms':      'Условия',
+        'footer.legal.security':   'Безопасность',
+        'footer.legal.status':     'Статус',
+        'footer.made': 'Для тех, кто <b>доводит до конца</b>.',
+        // Страница аналитики
+        'analytics.navtitle':          'Аналитика',
+        'analytics.share':             '↗ Поделиться серией',
+        'analytics.back':              '← К таймеру',
+        'analytics.title':             'Ваш <em>Журнал</em> фокуса',
+        'analytics.stat.sessions':     'Сессий за неделю',
+        'analytics.stat.hours':        'Часов фокуса',
+        'analytics.stat.bestday':      'Лучший день (мин)',
+        'analytics.stat.streak':       'Дней подряд',
+        'analytics.chart.label':       'История фокуса за 14 дней (минуты)',
+        'analytics.sessions.label':    'Последние сессии',
+        'analytics.table.take':        'Номер',
+        'analytics.table.note':        'Заметка',
+        'analytics.table.duration':    'Длина',
+        'analytics.table.type':        'Тип',
+        'analytics.empty':             'Сессий пока нет. Запусти таймер.',
       }
     };
 
