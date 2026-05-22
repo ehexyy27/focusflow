@@ -301,6 +301,39 @@
     }
     .analytics-back:hover { background: var(--ink); color: var(--paper); }
 
+    .analytics-share {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--paper);
+      background: var(--signal);
+      border: 1px solid var(--signal);
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease;
+    }
+    .analytics-share:hover { background: var(--signal-deep); border-color: var(--signal-deep); }
+    .analytics-share:active { transform: scale(0.97); }
+
+    /* Inline streak share link in ledger column */
+    .streak-share {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--signal);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: 6px;
+      opacity: 0.8;
+      transition: opacity 150ms ease;
+    }
+    .streak-share:hover { opacity: 1; }
+
     /* Scrollable body area */
     .analytics-body {
       flex: 1 1 0;
@@ -2069,7 +2102,8 @@
     @media (max-width: 380px) {
       .hero-h1 { font-size: clamp(3.2rem, 13.5vw, 13.5rem); }
       .tab .name { font-size: 13px; }
-      .nav-analytics { display: none; }    /* show only Sign out on tiny screens */
+      .nav-analytics { display: none; }
+      .analytics-share { font-size: 10px; padding: 6px 10px; }
       .analytics-stats { grid-template-columns: 1fr; }
       .a-stat { border-right: none; border-bottom: 1px solid var(--ink); }
       .a-stat:last-child { border-bottom: none; }
@@ -2313,7 +2347,7 @@
           <div class="receipts-wrap">
             <div class="receipts-label">
               <span>Printed receipts</span>
-              <span><b id="streakNum">01</b> day streak</span>
+              <span><b id="streakNum">01</b> day streak<button class="streak-share" onclick="shareStreak()" title="Share your streak">↗</button></span>
             </div>
 
             <div class="receipts-empty" id="receiptsEmpty">
@@ -2583,6 +2617,7 @@
     <div class="analytics-nav">
       <span class="analytics-nav-brand">FocusFlow — <em>Analytics</em></span>
       <div class="analytics-nav-actions">
+        <button class="analytics-share" onclick="shareStreak()">↗ Share streak</button>
         <button class="analytics-back" onclick="hideAnalytics()">← Back to Timer</button>
       </div>
     </div>
@@ -3222,6 +3257,52 @@
     function hideAnalytics() {
       document.getElementById('analyticsPage').classList.remove('open');
       document.body.style.overflow = '';
+    }
+
+    // ── Share streak ───────────────────────────────
+    async function shareStreak() {
+      const days   = streak || 0;
+      const sesh   = sessions || 0;
+      const mins   = focusMin || 0;
+      const hoursStr = mins >= 60
+        ? `${(mins / 60).toFixed(1)}h`
+        : `${mins}min`;
+      const url    = 'https://ehexyy27.github.io/focusflow';
+
+      const lines = [
+        days > 0
+          ? `${days}-day deep work streak — FocusFlow`
+          : `Deep work session logged — FocusFlow`,
+        `${sesh} session${sesh !== 1 ? 's' : ''} · ${hoursStr} focused today`,
+        `The work compounds.`,
+        ``,
+        `→ ${url}`,
+      ];
+      const text = lines.join('\n');
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: 'FocusFlow — My Streak', text, url });
+          return;
+        } catch (e) {
+          if (e.name === 'AbortError') return; // user cancelled — do nothing
+        }
+      }
+      // Clipboard fallback for desktop
+      try {
+        await navigator.clipboard.writeText(text);
+        toast('Streak copied — paste it anywhere.');
+      } catch {
+        // Ancient browser fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast('Streak copied — paste it anywhere.');
+      }
     }
 
     // Close analytics with Escape key
