@@ -2154,8 +2154,9 @@
         <span class="nav-user-name" id="navUserName"></span>
         <button class="nav-analytics" data-i18n="nav.analytics" onclick="showAnalytics()">Analytics</button>
         <button class="nav-signout" data-i18n="nav.signout" onclick="handleSignOut()">Sign out</button>
+        <button class="nav-lang" id="langBtn" onclick="toggleLang()" title="Switch language">RU</button>
       </div>
-      <button class="nav-lang" id="langBtn" onclick="toggleLang()" title="Switch language">RU</button>
+      <button class="nav-lang nav-lang-guest" id="langBtnGuest" onclick="toggleLang()" title="Switch language">RU</button>
       <button class="nav-cta" id="navCta" data-i18n="nav.cta" onclick="openAuth()">Begin a Session</button>
     </div>
   </nav>
@@ -2796,16 +2797,19 @@
       toast('Signed out. See you next session.');
     }
     function updateAuthUI() {
-      const userEl = document.getElementById('navUser');
-      const nameEl = document.getElementById('navUserName');
-      const ctaEl  = document.getElementById('navCta');
+      const userEl      = document.getElementById('navUser');
+      const nameEl      = document.getElementById('navUserName');
+      const ctaEl       = document.getElementById('navCta');
+      const guestLangEl = document.getElementById('langBtnGuest');
       if (currentUser) {
         userEl.style.display = 'flex';
         nameEl.textContent = currentUser.email.split('@')[0];
         ctaEl.style.display = 'none';
+        if (guestLangEl) guestLangEl.style.display = 'none';
       } else {
         userEl.style.display = 'none';
         ctaEl.style.display = 'inline-flex';
+        if (guestLangEl) guestLangEl.style.display = 'inline-flex';
       }
     }
 
@@ -3559,9 +3563,12 @@
         if (val !== undefined) el.innerHTML = val;
       });
 
-      // Toggle button label
+      // Toggle button labels (logged-in + guest)
+      const label = lang === 'en' ? 'RU' : 'EN';
       const btn = document.getElementById('langBtn');
-      if (btn) btn.textContent = lang === 'en' ? 'RU' : 'EN';
+      if (btn) btn.textContent = label;
+      const guestBtn = document.getElementById('langBtnGuest');
+      if (guestBtn) guestBtn.textContent = label;
 
       // Refresh live timer label to match current mode
       if (typeof mode !== 'undefined' && lblEl) {
