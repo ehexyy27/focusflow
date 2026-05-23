@@ -1316,6 +1316,128 @@
     }
     .goal-bar-fill.complete { background: var(--moss); }
 
+    /* ── Project / Client tracker ── */
+    .project-track {
+      padding: 14px 0 12px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .project-track-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .proj-input {
+      width: 100%;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--rule-strong);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 4px 0 6px;
+      outline: none;
+      transition: border-color 150ms ease;
+    }
+    .proj-input::placeholder { color: var(--muted-2); font-weight: 400; }
+    .proj-input:focus { border-bottom-color: var(--signal); }
+
+    /* ── Projects breakdown (analytics) ── */
+    .projects-section { margin-top: 8px; }
+    .projects-empty {
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+      padding: 12px 0;
+    }
+    .projects-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .projects-table thead th {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 0 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--ink);
+    }
+    .projects-table thead th:not(:first-child) { text-align: right; }
+    .projects-table tbody td {
+      padding: 10px 0 9px;
+      border-bottom: 1px solid var(--rule);
+      vertical-align: middle;
+    }
+    .projects-table tbody tr:last-child td { border-bottom: none; }
+    .proj-name-cell {
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--ink);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .proj-num-cell {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--ink-soft);
+      text-align: right;
+      padding-right: 8px !important;
+    }
+    .proj-rate-cell { text-align: right; white-space: nowrap; }
+    .proj-rate-sym { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .proj-rate-input {
+      width: 48px;
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--rule-strong);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-align: right;
+      outline: none;
+      padding: 2px 2px 3px;
+      transition: border-color 150ms ease, color 150ms ease;
+      -moz-appearance: textfield;
+    }
+    .proj-rate-input::-webkit-inner-spin-button,
+    .proj-rate-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .proj-rate-input:focus { border-bottom-color: var(--signal); color: var(--ink); }
+    .proj-total-cell {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--muted-2);
+      text-align: right;
+    }
+    .proj-total-cell.has-value { color: var(--moss); }
+    .copy-invoice-btn {
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--rule-strong);
+      padding: 7px 14px;
+      background: none;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+    }
+    .copy-invoice-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
     /* Receipt stack — the print moment */
     .receipts-wrap {
       padding-top: 24px;
@@ -2613,6 +2735,16 @@
             </div>
           </div>
 
+          <!-- Project / client tagger -->
+          <div class="project-track">
+            <div class="project-track-label" data-i18n="project.label">Project / Client</div>
+            <input class="proj-input" id="projInput" type="text" list="projSuggestions"
+                   placeholder="e.g. Acme Corp" autocomplete="off"
+                   oninput="onProjectInput(this.value)"
+                   onchange="onProjectChange(this.value)" />
+            <datalist id="projSuggestions"></datalist>
+          </div>
+
           <div class="ledger-stats">
             <div class="stat-block">
               <div class="stat-l" data-i18n="ledger.sessions">Sessions</div>
@@ -2945,6 +3077,14 @@
           </div>
         </div>
 
+        <!-- Project breakdown -->
+        <div class="chart-section projects-section">
+          <div class="chart-label" data-i18n="analytics.projects.label">Project breakdown (last 30 days)</div>
+          <div id="projectsBreakdown">
+            <div class="projects-empty" data-i18n="analytics.projects.empty">No project data yet. Tag a session above.</div>
+          </div>
+        </div>
+
         <!-- Recent sessions ledger -->
         <div class="ledger-section">
           <div class="chart-label" data-i18n="analytics.sessions.label">Recent sessions</div>
@@ -3093,14 +3233,21 @@
     // ── Supabase data ─────────────────────────────
     async function saveSession(minutes, isFull, quip) {
       if (!currentUser) return;
-      await sb.from('sessions').insert({
+      const base = {
         user_id: currentUser.id,
         duration_minutes: minutes,
         is_full_session: isFull,
         quip,
         mode,
         created_at: new Date().toISOString()
-      });
+      };
+      // Include project tag if one is set; fall back to base payload if column missing
+      const payload = currentProject ? { ...base, project: currentProject } : base;
+      const { error } = await sb.from('sessions').insert(payload);
+      if (error && currentProject) {
+        // Column may not exist yet — retry without project field
+        await sb.from('sessions').insert(base);
+      }
     }
 
     // Single query: fetch last 60 days → split into today stats + streak calc
@@ -3179,8 +3326,9 @@
     let take      = 1;
     let activeSound = null;
     let receiptCount = 0;
-    let dailyGoal   = parseInt(localStorage.getItem('ff-daily-goal') || '4', 10);
-    let customDur   = Math.max(1, Math.min(180, parseInt(localStorage.getItem('ff-custom-dur') || '60', 10)));
+    let dailyGoal      = parseInt(localStorage.getItem('ff-daily-goal') || '4', 10);
+    let customDur      = Math.max(1, Math.min(180, parseInt(localStorage.getItem('ff-custom-dur') || '60', 10)));
+    let currentProject = localStorage.getItem('ff-current-project') || '';
 
     // ── Issue number — derived from the week of year ──
     function getISOWeek(d) {
@@ -3348,6 +3496,100 @@
       dailyGoal = Math.max(1, Math.min(16, dailyGoal + delta));
       localStorage.setItem('ff-daily-goal', String(dailyGoal));
       updateGoalBar();
+    }
+
+    // ── Project / Client tracking ─────────────────
+    function getProjectRates() {
+      try { return JSON.parse(localStorage.getItem('ff-project-rates') || '{}'); } catch { return {}; }
+    }
+    function setProjectRate(name, rate) {
+      const rates = getProjectRates();
+      if (rate > 0) rates[name] = rate; else delete rates[name];
+      localStorage.setItem('ff-project-rates', JSON.stringify(rates));
+    }
+    function getRecentProjects() {
+      try { return JSON.parse(localStorage.getItem('ff-recent-projects') || '[]'); } catch { return []; }
+    }
+    function addRecentProject(name) {
+      if (!name) return;
+      const list = getRecentProjects().filter(p => p !== name);
+      list.unshift(name);
+      localStorage.setItem('ff-recent-projects', JSON.stringify(list.slice(0, 20)));
+    }
+    function updateProjectSuggestions() {
+      const dl = document.getElementById('projSuggestions');
+      if (!dl) return;
+      dl.innerHTML = getRecentProjects()
+        .map(p => `<option value="${p.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}"></option>`)
+        .join('');
+    }
+    function onProjectInput(val) {
+      currentProject = val.trim();
+    }
+    function onProjectChange(val) {
+      currentProject = val.trim();
+      localStorage.setItem('ff-current-project', currentProject);
+      if (currentProject) addRecentProject(currentProject);
+      updateProjectSuggestions();
+    }
+    function onRateChange(el, projectName) {
+      const rate = parseFloat(el.value) || 0;
+      setProjectRate(projectName, rate);
+      renderProjectTotals();
+    }
+    function renderProjectTotals() {
+      const rates = getProjectRates();
+      document.querySelectorAll('[data-proj-name]').forEach(row => {
+        const name = row.dataset.projName;
+        const mins = parseFloat(row.dataset.projMins) || 0;
+        const rate = parseFloat(rates[name]) || 0;
+        const total = rate > 0 ? (mins / 60) * rate : 0;
+        const totalEl = row.querySelector('.proj-total-cell');
+        if (totalEl) {
+          totalEl.textContent = rate > 0 ? '$' + total.toFixed(2) : '—';
+          totalEl.classList.toggle('has-value', rate > 0 && total > 0);
+        }
+        const rateEl = row.querySelector('.proj-rate-input');
+        if (rateEl && document.activeElement !== rateEl) {
+          rateEl.value = rate > 0 ? rate : '';
+        }
+      });
+    }
+    function copyInvoice() {
+      const rates = getProjectRates();
+      const ru = currentLang === 'ru';
+      const dateStr = new Date().toLocaleDateString(ru ? 'ru-RU' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const lines = [
+        'INVOICE — FocusFlow',
+        `${ru ? 'Дата' : 'Date'}: ${dateStr}`,
+        '',
+        `${'Project / Client'.padEnd(22)}${'Hours'.padStart(8)}  ${'Rate/h'.padStart(8)}  ${'Total'.padStart(9)}`,
+        '─'.repeat(52),
+      ];
+      let grandTotal = 0;
+      _projectData.forEach(({ name, totalMins }) => {
+        const hours = totalMins / 60;
+        const rate = parseFloat(rates[name]) || 0;
+        const total = rate > 0 ? hours * rate : 0;
+        grandTotal += total;
+        const namePad = name.slice(0, 22).padEnd(22);
+        const hoursPad = hours.toFixed(2).padStart(8);
+        const ratePad  = (rate > 0 ? '$' + rate.toFixed(2) : '—').padStart(8);
+        const totalPad = (total > 0 ? '$' + total.toFixed(2) : '—').padStart(9);
+        lines.push(`${namePad}${hoursPad}  ${ratePad}  ${totalPad}`);
+      });
+      lines.push('─'.repeat(52));
+      lines.push(`${(ru ? 'Итого' : 'TOTAL').padEnd(42)}$${grandTotal.toFixed(2)}`);
+      const text = lines.join('\n');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => toast(ru ? 'Инвойс скопирован' : 'Invoice copied'));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast(ru ? 'Инвойс скопирован' : 'Invoice copied');
+      }
     }
 
     function resetTimer() {
@@ -3647,6 +3889,7 @@
 
     // ── Analytics ─────────────────────────────────
     let chartInstance = null;
+    let _projectData  = [];
 
     function showAnalytics() {
       document.getElementById('analyticsPage').classList.add('open');
@@ -3754,6 +3997,57 @@
       document.getElementById('aBestDay').textContent = bestDay || '—';
       document.getElementById('aStreak').textContent = streak;
       document.getElementById('aCompletion').textContent = completionPct !== null ? completionPct + '%' : '—';
+
+      // ── Project breakdown ──────────────────────────────────
+      const projMap = {};
+      data.forEach(s => {
+        const name = (s.project || '').trim();
+        if (!name) return;
+        if (!projMap[name]) projMap[name] = { totalMins: 0, sessions: 0 };
+        projMap[name].totalMins += s.duration_minutes;
+        projMap[name].sessions++;
+      });
+      _projectData = Object.entries(projMap)
+        .map(([name, d]) => ({ name, totalMins: d.totalMins, sessions: d.sessions }))
+        .sort((a, b) => b.totalMins - a.totalMins);
+
+      const projContainer = document.getElementById('projectsBreakdown');
+      if (projContainer) {
+        const ru = currentLang === 'ru';
+        if (!_projectData.length) {
+          projContainer.innerHTML = `<div class="projects-empty">${ru
+            ? 'Нет данных по проектам. Укажи проект перед запуском сессии.'
+            : 'No project data yet. Tag a session above.'}</div>`;
+        } else {
+          const rates = getProjectRates();
+          const rows = _projectData.map(({ name, totalMins, sessions }) => {
+            const hours = (totalMins / 60).toFixed(2);
+            const rate  = parseFloat(rates[name]) || 0;
+            const total = rate > 0 ? ((totalMins / 60) * rate) : 0;
+            const safeAttr = name.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+            const safeJs   = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+            return `<tr data-proj-name="${safeAttr}" data-proj-mins="${totalMins}">
+              <td class="proj-name-cell" title="${safeAttr}">${name.replace(/&/g,'&amp;')}</td>
+              <td class="proj-num-cell">${sessions}</td>
+              <td class="proj-num-cell">${hours}h</td>
+              <td class="proj-rate-cell"><span class="proj-rate-sym">$</span><input class="proj-rate-input" type="number" min="0" step="1" placeholder="0" value="${rate > 0 ? rate : ''}" onchange="onRateChange(this,'${safeJs}')"></td>
+              <td class="proj-total-cell${total > 0 ? ' has-value' : ''}">${total > 0 ? '$' + total.toFixed(2) : '—'}</td>
+            </tr>`;
+          }).join('');
+          projContainer.innerHTML = `
+            <table class="projects-table">
+              <thead><tr>
+                <th>${ru ? 'Проект' : 'Project'}</th>
+                <th>${ru ? 'Сессий' : 'Sessions'}</th>
+                <th>${ru ? 'Часов' : 'Hours'}</th>
+                <th>${ru ? 'Ставка/ч' : 'Rate/h'}</th>
+                <th>${ru ? 'Итого' : 'Total'}</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+            <button class="copy-invoice-btn" onclick="copyInvoice()">↗ ${ru ? 'Скопировать инвойс' : 'Copy invoice'}</button>`;
+        }
+      }
 
       // ── Weekly pattern (day-of-week breakdown) ────────────
       // 0=Mon … 6=Sun (ISO order)
@@ -4035,7 +4329,10 @@
         'analytics.empty':             'No sessions yet. Start the timer.',
         'analytics.stat.completion':   'Completion rate',
         'analytics.pattern.label':     'Weekly pattern (avg min / day)',
+        'analytics.projects.label':    'Project breakdown (last 30 days)',
+        'analytics.projects.empty':    'No project data yet. Tag a session above.',
         'goal.label':                  'Daily goal',
+        'project.label':               'Project / Client',
       },
       ru: {
         'nav.timer':       'Таймер',
@@ -4184,7 +4481,10 @@
         'analytics.empty':             'Сессий пока нет. Запусти таймер.',
         'analytics.stat.completion':   'Процент завершённых',
         'analytics.pattern.label':     'Паттерн по дням (сред. мин / день)',
+        'analytics.projects.label':    'Проекты и клиенты (последние 30 дней)',
+        'analytics.projects.empty':    'Нет данных по проектам. Укажи проект перед сессией.',
         'goal.label':                  'Цель на день',
+        'project.label':               'Проект / Клиент',
       }
     };
 
@@ -4248,6 +4548,11 @@
     setLang(currentLang);
     // Init goal bar with current sessions (0 on fresh load, real value after loadUserData)
     updateGoalBar();
+    // Init project input with saved value + populate datalist
+    const projInputEl = document.getElementById('projInput');
+    if (projInputEl && currentProject) projInputEl.value = currentProject;
+    updateProjectSuggestions();
+
     // Init custom tab display with saved value
     const customDurDisplayEl = document.getElementById('customDurDisplay');
     if (customDurDisplayEl) customDurDisplayEl.textContent = customDur + ' min';

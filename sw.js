@@ -1,6 +1,6 @@
 // FocusFlow Service Worker
 // Cache-first for shell, network-first for Supabase
-const CACHE_NAME = 'focusflow-v6';
+const CACHE_NAME = 'focusflow-v7';
 const SHELL = [
   '/focusflow/',
   '/focusflow/index.html',
