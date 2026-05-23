@@ -392,7 +392,7 @@
 
     .analytics-stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       border: 1px solid var(--ink);
       margin-bottom: 40px;
     }
@@ -488,6 +488,62 @@
       font-size: 1.4rem;
       font-style: italic;
     }
+
+    /* ── Weekly pattern (day-of-week bars) ── */
+    .day-pattern {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      align-items: end;
+      height: 110px;
+      padding: 0;
+    }
+    .day-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+    }
+    .day-bar-wrap {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 8px;
+    }
+    .day-bar {
+      width: 100%;
+      max-width: 36px;
+      min-height: 2px;
+      background: rgba(255,45,26,0.2);
+      transition: height 700ms var(--ease-out-expo);
+    }
+    .day-bar.peak  { background: var(--signal); }
+    .day-bar.today { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .day-bar.today.peak { outline-color: var(--signal-deep); }
+    .day-name {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .day-avg {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted-2);
+    }
+    .analytics-insight {
+      margin-top: 12px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .analytics-insight b { color: var(--signal); font-style: normal; }
 
     /* ── Auth Modal ── */
     .auth-overlay {
@@ -1139,6 +1195,71 @@
       font-variant-numeric: lining-nums tabular-nums;
     }
     .stat-v em { font-style: italic; color: var(--signal); font-weight: 600; }
+
+    /* ── Daily goal tracker ── */
+    .goal-track {
+      padding: 18px 0 16px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .goal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .goal-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .goal-adj-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .goal-adj {
+      background: none;
+      border: 1px solid var(--rule-strong);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .goal-adj:hover { background: var(--ink); color: var(--paper); }
+    .goal-fraction {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      min-width: 44px;
+      text-align: center;
+    }
+    .goal-fraction b { color: var(--signal); font-weight: 600; }
+    .goal-fraction.complete b { color: var(--moss); }
+    .goal-bar-track {
+      width: 100%;
+      height: 3px;
+      background: var(--rule);
+      position: relative;
+      overflow: hidden;
+    }
+    .goal-bar-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: var(--signal);
+      width: 0;
+      transition: width 600ms var(--ease-out-expo), background 400ms ease;
+    }
+    .goal-bar-fill.complete { background: var(--moss); }
 
     /* Receipt stack — the print moment */
     .receipts-wrap {
@@ -2041,10 +2162,13 @@
       .sounds { grid-template-columns: 1fr 1fr; }
       .snd:nth-child(2) { border-right: none; }
       .snd:nth-child(1), .snd:nth-child(2) { border-bottom: 1px solid var(--ink); }
-      /* Analytics stats: 2×2 on tablet */
+      /* Analytics stats: 2+2+1 on tablet (5 stats) */
       .analytics-stats { grid-template-columns: 1fr 1fr; }
-      .a-stat:nth-child(2) { border-right: none; }
-      .a-stat:nth-child(1), .a-stat:nth-child(2) { border-bottom: 1px solid var(--ink); }
+      .a-stat:nth-child(2),
+      .a-stat:nth-child(4) { border-right: none; }
+      .a-stat:nth-child(1), .a-stat:nth-child(2),
+      .a-stat:nth-child(3), .a-stat:nth-child(4) { border-bottom: 1px solid var(--ink); }
+      .a-stat:nth-child(5) { grid-column: span 2; border-right: none; }
     }
 
     @media (max-width: 640px) {
@@ -2152,8 +2276,11 @@
       /* ── Analytics page ── */
       /* 2×2 grid on phone (was 4-col, completely unreadable) */
       .analytics-stats { grid-template-columns: 1fr 1fr; }
-      .a-stat:nth-child(2) { border-right: none; }
-      .a-stat:nth-child(1), .a-stat:nth-child(2) { border-bottom: 1px solid var(--ink); }
+      .a-stat:nth-child(2),
+      .a-stat:nth-child(4) { border-right: none; }
+      .a-stat:nth-child(1), .a-stat:nth-child(2),
+      .a-stat:nth-child(3), .a-stat:nth-child(4) { border-bottom: 1px solid var(--ink); }
+      .a-stat:nth-child(5) { grid-column: span 2; border-right: none; }
       .analytics-nav { padding: 12px var(--pad); }
       .analytics-nav-brand { font-size: 15px; }
 
@@ -2398,6 +2525,21 @@
           <div class="ledger-head">
             <div class="title" data-i18n-html="ledger.title"><b>Today's</b> ledger</div>
             <div class="count"><span data-i18n="ledger.receipts">Receipts</span> <b id="ledgerCount">00</b></div>
+          </div>
+
+          <!-- Daily goal progress -->
+          <div class="goal-track">
+            <div class="goal-top">
+              <span class="goal-label" data-i18n="goal.label">Daily goal</span>
+              <div class="goal-adj-row">
+                <button class="goal-adj" onclick="adjustGoal(-1)" aria-label="Decrease goal">−</button>
+                <span class="goal-fraction" id="goalFraction"><b id="goalCurrent">0</b> / <span id="goalTarget">4</span></span>
+                <button class="goal-adj" onclick="adjustGoal(1)" aria-label="Increase goal">+</button>
+              </div>
+            </div>
+            <div class="goal-bar-track">
+              <div class="goal-bar-fill" id="goalBarFill"></div>
+            </div>
           </div>
 
           <div class="ledger-stats">
@@ -2709,6 +2851,10 @@
             <div class="a-stat-val" id="aStreak">—</div>
             <div class="a-stat-lbl" data-i18n="analytics.stat.streak">Day streak</div>
           </div>
+          <div class="a-stat">
+            <div class="a-stat-val signal" id="aCompletion">—</div>
+            <div class="a-stat-lbl" data-i18n="analytics.stat.completion">Completion rate</div>
+          </div>
         </div>
 
         <!-- Chart -->
@@ -2716,6 +2862,15 @@
           <div class="chart-label" data-i18n="analytics.chart.label">14-day focus history (minutes)</div>
           <div class="chart-canvas-wrap">
             <canvas id="focusChart" height="180"></canvas>
+          </div>
+        </div>
+
+        <!-- Weekly pattern -->
+        <div class="chart-section">
+          <div class="chart-label" data-i18n="analytics.pattern.label">Weekly pattern (avg min / day)</div>
+          <div class="chart-canvas-wrap">
+            <div class="day-pattern" id="dayPattern"></div>
+            <div class="analytics-insight" id="patternInsight"></div>
           </div>
         </div>
 
@@ -2840,6 +2995,7 @@
       currentUser = null;
       sessions = 0; focusMin = 0; streak = 1; take = 1; receiptCount = 0;
       updateAuthUI();
+      updateGoalBar();
       sesEl.textContent = '00';
       timeEl.innerHTML = '0<em>m</em>';
       if (streakNumEl) streakNumEl.textContent = '01';
@@ -2907,6 +3063,7 @@
       sessions = todayData.length;
       take = sessions + 1;
       focusMin = todayData.reduce((acc, s) => acc + s.duration_minutes, 0);
+      updateGoalBar();
       sesEl.textContent = String(sessions).padStart(2, '0');
       timeEl.innerHTML = focusMin >= 60
         ? `${(focusMin / 60).toFixed(1)}<em>h</em>`
@@ -2951,6 +3108,7 @@
     let take      = 1;
     let activeSound = null;
     let receiptCount = 0;
+    let dailyGoal = parseInt(localStorage.getItem('ff-daily-goal') || '4', 10);
 
     // ── Issue number — derived from the week of year ──
     function getISOWeek(d) {
@@ -3098,6 +3256,28 @@
       setRunningStyle(false);
     }
 
+    // ── Daily Goal ────────────────────────────────
+    function updateGoalBar() {
+      const fillEl   = document.getElementById('goalBarFill');
+      const currEl   = document.getElementById('goalCurrent');
+      const targetEl = document.getElementById('goalTarget');
+      const fracEl   = document.getElementById('goalFraction');
+      if (!fillEl || !currEl || !targetEl) return;
+      const pct = dailyGoal > 0 ? Math.min(sessions / dailyGoal, 1) : 0;
+      fillEl.style.width = (pct * 100) + '%';
+      const done = sessions >= dailyGoal;
+      fillEl.classList.toggle('complete', done);
+      if (fracEl) fracEl.classList.toggle('complete', done);
+      currEl.textContent = sessions;
+      targetEl.textContent = dailyGoal;
+    }
+
+    function adjustGoal(delta) {
+      dailyGoal = Math.max(1, Math.min(16, dailyGoal + delta));
+      localStorage.setItem('ff-daily-goal', String(dailyGoal));
+      updateGoalBar();
+    }
+
     function resetTimer() {
       pause();
       remaining = duration;
@@ -3120,6 +3300,7 @@
         sessions++;
         take++;
         focusMin += actualMinutes;
+        updateGoalBar();
 
         sesEl.textContent  = String(sessions).padStart(2, '0');
         timeEl.innerHTML = focusMin >= 60
@@ -3451,10 +3632,66 @@
       const weekMins = weekData.reduce((a, s) => a + s.duration_minutes, 0);
       const bestDay = Math.max(...values.slice(-7), 0);
 
+      // Completion rate (full sessions / total sessions, last 30 days)
+      const fullCount = data.filter(s => s.is_full_session).length;
+      const completionPct = data.length > 0 ? Math.round((fullCount / data.length) * 100) : null;
+
       document.getElementById('aSessions').textContent = weekSessions;
       document.getElementById('aHours').textContent = (weekMins / 60).toFixed(1) + 'h';
       document.getElementById('aBestDay').textContent = bestDay || '—';
       document.getElementById('aStreak').textContent = streak;
+      document.getElementById('aCompletion').textContent = completionPct !== null ? completionPct + '%' : '—';
+
+      // ── Weekly pattern (day-of-week breakdown) ────────────
+      // 0=Mon … 6=Sun (ISO order)
+      const dayTotals = new Array(7).fill(0);
+      const dayCounts = new Array(7).fill(0);
+      data.forEach(s => {
+        const dow = (new Date(s.created_at).getDay() + 6) % 7;
+        dayTotals[dow] += s.duration_minutes;
+        dayCounts[dow]++;
+      });
+      const dayAvgs = dayTotals.map((t, i) => dayCounts[i] ? Math.round(t / dayCounts[i]) : 0);
+      const maxAvg  = Math.max(...dayAvgs, 1);
+      const todayDow = (new Date().getDay() + 6) % 7;
+      const ru = currentLang === 'ru';
+      const dayNamesEn = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      const dayNamesRu = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+      const dayNames   = ru ? dayNamesRu : dayNamesEn;
+
+      const patternEl = document.getElementById('dayPattern');
+      if (patternEl) {
+        patternEl.innerHTML = dayAvgs.map((avg, i) => {
+          const pct    = maxAvg > 0 ? (avg / maxAvg) * 100 : 0;
+          const isPeak = avg > 0 && avg === maxAvg;
+          const isToday = i === todayDow;
+          return `<div class="day-col">
+            <div class="day-bar-wrap">
+              <div class="day-bar${isPeak ? ' peak' : ''}${isToday ? ' today' : ''}"
+                   style="height:${Math.max(pct, avg > 0 ? 4 : 0)}%"></div>
+            </div>
+            <div class="day-name">${dayNames[i]}</div>
+            <div class="day-avg">${avg ? avg + 'm' : '—'}</div>
+          </div>`;
+        }).join('');
+      }
+
+      // Insight sentence
+      const insightEl = document.getElementById('patternInsight');
+      if (insightEl) {
+        const peakIdx = dayAvgs.indexOf(maxAvg);
+        const fullDayNamesEn = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        const fullDayNamesRu = ['понедельник','вторник','среду','четверг','пятницу','субботу','воскресенье'];
+        if (data.length >= 3 && maxAvg > 0) {
+          insightEl.innerHTML = ru
+            ? `Лучше всего ты фокусируешься <b>${fullDayNamesRu[peakIdx]}</b> — в среднем ${maxAvg} минут.`
+            : `You focus best on <b>${fullDayNamesEn[peakIdx]}</b> — ${maxAvg} min on average.`;
+        } else {
+          insightEl.textContent = ru
+            ? 'Пока недостаточно данных. Проведи ещё несколько сессий.'
+            : 'Not enough data yet. Complete a few more sessions.';
+        }
+      }
 
       // Render chart
       const ctx = document.getElementById('focusChart').getContext('2d');
@@ -3681,6 +3918,9 @@
         'analytics.table.duration':    'Duration',
         'analytics.table.type':        'Type',
         'analytics.empty':             'No sessions yet. Start the timer.',
+        'analytics.stat.completion':   'Completion rate',
+        'analytics.pattern.label':     'Weekly pattern (avg min / day)',
+        'goal.label':                  'Daily goal',
       },
       ru: {
         'nav.timer':       'Таймер',
@@ -3825,6 +4065,9 @@
         'analytics.table.duration':    'Длина',
         'analytics.table.type':        'Тип',
         'analytics.empty':             'Сессий пока нет. Запусти таймер.',
+        'analytics.stat.completion':   'Процент завершённых',
+        'analytics.pattern.label':     'Паттерн по дням (сред. мин / день)',
+        'goal.label':                  'Цель на день',
       }
     };
 
@@ -3886,6 +4129,8 @@
     draw();
     // Apply stored language (after draw so playLbl/lblEl exist)
     setLang(currentLang);
+    // Init goal bar with current sessions (0 on fresh load, real value after loadUserData)
+    updateGoalBar();
   </script>
 </body>
 </html>
