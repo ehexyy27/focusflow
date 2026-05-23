@@ -994,6 +994,61 @@
       padding-top: 16px;
     }
 
+    /* ── Custom duration row ── */
+    .custom-row {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 4px 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .custom-row.visible { display: flex; }
+
+    .custom-nudge {
+      background: none;
+      border: 1px solid var(--rule-strong);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      width: 30px; height: 30px;
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+    }
+    .custom-nudge:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    .custom-dur-field {
+      flex: 1;
+      min-width: 0;
+      background: none;
+      border: none;
+      border-bottom: 2px solid var(--ink);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-align: center;
+      outline: none;
+      padding: 2px 0 4px;
+      -moz-appearance: textfield;
+    }
+    .custom-dur-field::-webkit-inner-spin-button,
+    .custom-dur-field::-webkit-outer-spin-button { -webkit-appearance: none; }
+    .custom-dur-field:focus { border-bottom-color: var(--signal); color: var(--signal-deep); }
+
+    .custom-unit {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
     /* CENTER column — the giant timer (with container queries for sane sizing) */
     .timer-center {
       grid-column: 4 / span 5;
@@ -2144,6 +2199,7 @@
       .tab:last-child { border-right: none; }
       .tab .num, .tab .dur { font-size: 9.5px; }
       .tab .name { font-size: 16px; }
+      .custom-row { border-top: none; padding: 12px 0 8px; }
       .feat-head { grid-template-columns: 1fr; }
       .pricing-head { grid-template-columns: 1fr; }
       .price-grid { grid-template-columns: 1fr; }
@@ -2456,6 +2512,21 @@
               <span class="name" data-i18n="mode.long">Long Break</span>
               <span class="dur">15 min</span>
             </button>
+            <button class="tab" id="tabCustom" onclick="activateCustom()">
+              <span class="num">04</span>
+              <span class="name" data-i18n="mode.custom">Custom</span>
+              <span class="dur" id="customDurDisplay">— min</span>
+            </button>
+          </div>
+
+          <!-- Custom duration input — shown only when custom tab is active -->
+          <div class="custom-row" id="customRow">
+            <button class="custom-nudge" onclick="nudgeCustom(-5)" aria-label="−5 min">−5</button>
+            <input class="custom-dur-field" id="customDurField"
+                   type="number" min="1" max="180"
+                   value="60" aria-label="Duration in minutes" />
+            <button class="custom-nudge" onclick="nudgeCustom(5)" aria-label="+5 min">+5</button>
+            <span class="custom-unit" data-i18n="timer.custom.unit">min</span>
           </div>
           <p class="caption" data-i18n="timer.caption">
             The classic 25/5 cadence is the default. Switch to a longer block for the deep stuff — a paper, a hard bug, a difficult conversation with the page.
@@ -3108,7 +3179,8 @@
     let take      = 1;
     let activeSound = null;
     let receiptCount = 0;
-    let dailyGoal = parseInt(localStorage.getItem('ff-daily-goal') || '4', 10);
+    let dailyGoal   = parseInt(localStorage.getItem('ff-daily-goal') || '4', 10);
+    let customDur   = Math.max(1, Math.min(180, parseInt(localStorage.getItem('ff-custom-dur') || '60', 10)));
 
     // ── Issue number — derived from the week of year ──
     function getISOWeek(d) {
@@ -3391,6 +3463,8 @@
     }
 
     function setMode(btn, m, dur) {
+      // Hide custom row when switching to a standard mode
+      document.getElementById('customRow')?.classList.remove('visible');
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       btn.classList.add('active');
       mode = m;
@@ -3403,6 +3477,45 @@
       if (cornerCadenceEl) cornerCadenceEl.textContent = cadenceMap[dur] || '-- / --';
       pause();
       draw();
+    }
+
+    // ── Custom duration ───────────────────────────
+    function activateCustom() {
+      document.getElementById('customRow')?.classList.add('visible');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tabCustom')?.classList.add('active');
+      // Apply saved custom duration
+      applyCustomDur(customDur, false);
+      // Pre-fill and focus the input
+      const field = document.getElementById('customDurField');
+      if (field) { field.value = customDur; field.focus(); field.select(); }
+    }
+
+    function applyCustomDur(mins, resetTimer = true) {
+      const clamped = Math.max(1, Math.min(180, mins));
+      customDur = clamped;
+      localStorage.setItem('ff-custom-dur', String(clamped));
+      const secs = clamped * 60;
+      mode = 'Focus';
+      duration = secs;
+      remaining = secs;
+      const modeLabel = TRANSLATIONS[currentLang]['mode.focus'] || 'Focus';
+      lblEl.textContent = `— ${modeLabel.toUpperCase()} —`;
+      const padded = String(clamped).padStart(2, '0');
+      if (cornerCadenceEl) cornerCadenceEl.textContent = `${padded} / --`;
+      // Update display on the tab
+      const durEl = document.getElementById('customDurDisplay');
+      if (durEl) durEl.textContent = clamped + ' min';
+      if (resetTimer) { pause(); draw(); }
+      else draw();
+    }
+
+    function nudgeCustom(delta) {
+      const field = document.getElementById('customDurField');
+      if (!field) return;
+      const val = Math.max(1, Math.min(180, parseInt(field.value || '60', 10) + delta));
+      field.value = val;
+      applyCustomDur(val);
     }
 
     // ── Ambient Sounds — Web Audio API ───────────
@@ -3793,11 +3906,13 @@
         'metric.focusers': 'Active focusers',
         'metric.rating':   'App Store rating',
         'metric.output':   'Reported output',
-        'timer.cadence':   'Select cadence',
-        'mode.focus':      'Focus',
-        'mode.short':      'Short Break',
-        'mode.long':       'Long Break',
-        'timer.reset':     'Reset',
+        'timer.cadence':      'Select cadence',
+        'mode.focus':         'Focus',
+        'mode.short':         'Short Break',
+        'mode.long':          'Long Break',
+        'mode.custom':        'Custom',
+        'timer.custom.unit':  'min',
+        'timer.reset':        'Reset',
         'timer.begin':     'Begin',
         'timer.resume':    'Resume',
         'timer.pause':     'Pause',
@@ -3940,11 +4055,13 @@
         'metric.focusers': 'Активных пользователей',
         'metric.rating':   'Рейтинг App Store',
         'metric.output':   'Рост продуктивности',
-        'timer.cadence':   'Выбрать режим',
-        'mode.focus':      'Фокус',
-        'mode.short':      'Перерыв',
-        'mode.long':       'Долгий перерыв',
-        'timer.reset':     'Сброс',
+        'timer.cadence':      'Выбрать режим',
+        'mode.focus':         'Фокус',
+        'mode.short':         'Перерыв',
+        'mode.long':          'Долгий перерыв',
+        'mode.custom':        'Своё время',
+        'timer.custom.unit':  'мин',
+        'timer.reset':        'Сброс',
         'timer.begin':     'Старт',
         'timer.resume':    'Продолжить',
         'timer.pause':     'Пауза',
@@ -4131,6 +4248,31 @@
     setLang(currentLang);
     // Init goal bar with current sessions (0 on fresh load, real value after loadUserData)
     updateGoalBar();
+    // Init custom tab display with saved value
+    const customDurDisplayEl = document.getElementById('customDurDisplay');
+    if (customDurDisplayEl) customDurDisplayEl.textContent = customDur + ' min';
+    // Custom input field — live update as user types
+    const customField = document.getElementById('customDurField');
+    if (customField) {
+      customField.value = customDur;
+      customField.addEventListener('input', function () {
+        const val = parseInt(this.value, 10);
+        if (!isNaN(val) && val >= 1 && val <= 180) applyCustomDur(val);
+      });
+      customField.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { this.blur(); }
+        // Arrow keys: nudge by 1
+        if (e.key === 'ArrowUp')   { e.preventDefault(); nudgeCustom(1); }
+        if (e.key === 'ArrowDown') { e.preventDefault(); nudgeCustom(-1); }
+      });
+      customField.addEventListener('blur', function () {
+        // Clamp and sync on blur
+        const val = parseInt(this.value, 10);
+        const clamped = isNaN(val) ? customDur : Math.max(1, Math.min(180, val));
+        this.value = clamped;
+        applyCustomDur(clamped);
+      });
+    }
   </script>
 </body>
 </html>
