@@ -2129,9 +2129,9 @@
       .controls { flex-direction: column; }
       .icon-btn, .play-btn { border-right: none; border-bottom: 1px solid var(--ink); }
       .icon-btn:last-child { border-bottom: none; }
-      /* Lift bottom corners above the ring arc (ring ends ~16px from bottom) */
+      /* Hide bottom corners on mobile — ring arc overlaps at all positions on narrow frames */
       .timer-corner.bl,
-      .timer-corner.br { bottom: 26px; }
+      .timer-corner.br { display: none; }
 
       /* ── Bento ── */
       /* Full-width at 640px — 2-col is too tight on 375px phones */
